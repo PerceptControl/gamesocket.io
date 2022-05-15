@@ -1,0 +1,30 @@
+{
+  "name": "gamesocket.io",
+  "version": "1.0.1",
+  "description": "Simple API lie socket.io based on uWebSocket.js",
+  "main": "./lib/Server.mjs",
+  "keywords": [
+    "socket",
+    "event"
+  ],
+  "author": "Egor Kungurzev <sa1rac.work@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "uuid": "^8.3.2",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.4.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
+    "version": "git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "files": [
+    "lib/**/**"
+  ],
+  "devDependencies": {
+    "@types/node": "^17.0.33",
+    "@types/uuid": "^8.3.4",
+    "@types/uws": "^0.13.3"
+  }
+}

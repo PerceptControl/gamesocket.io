@@ -1,6 +1,6 @@
 {
   "name": "gamesocket.io",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple API lie socket.io based on uWebSocket.js",
   "main": "./lib/Server.js",
   "keywords": [

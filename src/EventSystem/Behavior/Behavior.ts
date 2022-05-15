@@ -1,6 +1,5 @@
-import { DataManager } from '../../DataManager/DataManager.mjs'
+import { DataManager } from '../../DataManager/DataManager'
 import uWS from 'uWebSockets.js'
-import { runInThisContext } from 'vm'
 
 export type openHandler = (socket: uWS.WebSocket) => void
 export type closeHandler = (

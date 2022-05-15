@@ -1,5 +1,5 @@
 import uWS from 'uWebSockets.js'
-import { Namespace } from './EventSystem/Namespace/Namespace.mjs'
+import { Namespace } from './EventSystem/Namespace/Namespace'
 import { v4 as uuid4 } from 'uuid'
 
 var app = uWS.App()

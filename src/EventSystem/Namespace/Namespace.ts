@@ -3,9 +3,9 @@ import {
   customHandler,
   openHandler,
   WsBehavior,
-} from '../Behavior/Behavior.mjs'
-import { ServerProxy } from '../ServerProxy.mjs'
-import { RoomsController } from '../RoomsController/RoomsController.mjs'
+} from '../Behavior/Behavior'
+import { ServerProxy } from '../ServerProxy'
+import { RoomsController } from '../RoomsController/RoomsController'
 
 export class Namespace {
   static pool = new Map()
@@ -32,7 +32,7 @@ export class Namespace {
   }
 
   emit(eventName: string, eventData: object = {}, eventMeta: object = {}) {
-    ServerProxy.emit(this.name, eventName, 'path', eventData, eventMeta)
+    ServerProxy.emit(this.name, eventName, eventData, eventMeta, 'path')
   }
 
   has(id: string) {

@@ -1,5 +1,5 @@
 import { StringDecoder } from 'string_decoder'
-import { PacketStructure } from '../StructureConfig.mjs'
+import { PacketStructure } from '../StructureConfig'
 
 //Конвертирует получаемые по сокетам данные в объект(ArrayBuffer to String)
 

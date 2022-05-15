@@ -1,6 +1,6 @@
-import { Packet } from '../Packet/Packet.mjs'
-import { PacketStructure, PacketStructureConfig } from '../StructureConfig.mjs'
-import { DataDecoder } from './DataDecoder.mjs'
+import { Packet } from '../Packet/Packet'
+import { PacketStructure, PacketStructureConfig } from '../StructureConfig'
+import { DataDecoder } from './DataDecoder'
 
 export class PacketController {
   private packet = new Packet(PacketStructureConfig)

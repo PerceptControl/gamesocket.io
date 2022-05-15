@@ -2,11 +2,12 @@
   "name": "gamesocket.io",
   "version": "1.0.2",
   "description": "Simple API lie socket.io based on uWebSocket.js",
-  "main": "./lib/Server.mjs",
+  "main": "./lib/Server.js",
   "keywords": [
     "socket",
     "event"
   ],
+  "type": "module",
   "author": "Egor Kungurzev <sa1rac.work@gmail.com>",
   "license": "ISC",
   "dependencies": {
@@ -14,17 +15,23 @@
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.4.0"
   },
   "scripts": {
+    "test": "jest --config ./jest.config.json",
     "build": "tsc",
+    "prepublishOnly": "npm test",
     "prepare": "npm run build",
     "version": "git add -A src",
     "postversion": "git push && git push --tags"
   },
   "files": [
-    "lib/**/**"
+    "lib/**"
   ],
   "devDependencies": {
+    "@types/jest": "^27.5.1",
     "@types/node": "^17.0.33",
     "@types/uuid": "^8.3.4",
-    "@types/uws": "^0.13.3"
+    "@types/uws": "^0.13.3",
+    "jest": "^28.1.0",
+    "string-to-arraybuffer": "^1.0.2",
+    "ts-jest": "^28.0.2"
   }
 }

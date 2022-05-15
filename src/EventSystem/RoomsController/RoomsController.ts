@@ -1,4 +1,4 @@
-import { ServerProxy } from '../ServerProxy.mjs'
+import { ServerProxy } from '../ServerProxy'
 
 interface Destination {
   object: string | Array<string>
@@ -49,9 +49,9 @@ export class RoomsController {
     ServerProxy.emit(
       this.destination.object,
       eventName,
-      this.destination.type,
       eventData,
       eventMeta,
+      this.destination.type,
     )
   }
 

@@ -1,27 +1,28 @@
-import { Server } from '../Server.mjs'
-import { DataManager } from '../DataManager/DataManager.mjs'
+import { Server } from '../Server'
+import { DataManager } from '../DataManager/DataManager'
 import { WebSocket } from 'uWebSockets.js'
 
 var manager = new DataManager()
 
 export class ServerProxy {
   static emit(
-    destination: any,
+    destination: string | Array<string>,
     eventName: string,
-    destinationType: string,
     eventData: object,
     eventMeta: object,
+    destinationType?: string,
   ) {
-    switch (destinationType) {
-      case 'socket':
-        Emitter.toSocket(destination, eventName, eventData, eventMeta)
-        break
-      case 'path':
-        Emitter.toRoomPath(destination, eventName, eventData, eventMeta)
-        break
-      case 'group':
-        Emitter.toGroup(destination, eventName, eventData, eventMeta)
-        break
+    if (destination instanceof Array) {
+      Emitter.toGroup(destination, eventName, eventData, eventMeta)
+    } else {
+      switch (destinationType) {
+        case 'socket':
+          Emitter.toSocket(destination, eventName, eventData, eventMeta)
+          break
+        case 'path':
+          Emitter.toRoomPath(destination, eventName, eventData, eventMeta)
+          break
+      }
     }
   }
 

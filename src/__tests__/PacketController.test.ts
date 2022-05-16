@@ -1,15 +1,11 @@
 import { DataDecoder } from '../DataManager/PacketController/DataDecoder'
 import { PacketController } from '../DataManager/PacketController/PacketController'
-import {
-  PacketStructure,
-  PacketStructureConfig,
-} from '../DataManager/StructureConfig'
+import { PacketStructure } from '../index'
+import { DefaultPacketStructure } from '../DataManager/PacketStructure.config'
 var stb = require('string-to-arraybuffer')
 
 describe('Packet controller', () => {
-  var controller: PacketController,
-    socketData: string,
-    newConfig: PacketStructure
+  var controller: PacketController, socketData: string
 
   describe('Test with correct data', () => {
     beforeEach(() => {
@@ -36,32 +32,6 @@ describe('Packet controller', () => {
       expect(controller.toString()).toBe(socketData)
     })
   })
-
-  describe('Test with custom packet configuration', () => {
-    beforeEach(() => {
-      controller = new PacketController()
-
-      newConfig = {
-        meta: {},
-        user: {},
-      }
-
-      controller.config = newConfig
-
-      socketData = JSON.stringify({
-        meta: {
-          login: 'testLogin',
-        },
-        data: {
-          password: 'testPassword',
-        },
-      })
-    })
-
-    test('Set all socket data as ArrayBuffe', () => {
-      expect(() => controller.setData(stb(socketData))).toThrow(Error)
-    })
-  })
 })
 
 describe('Packet decoder', () => {
@@ -69,7 +39,7 @@ describe('Packet decoder', () => {
 
   describe('Test with corrupted data', () => {
     beforeEach(() => {
-      decoder = new DataDecoder(PacketStructureConfig)
+      decoder = new DataDecoder(DefaultPacketStructure)
       configObject = {
         meta: {},
         data: {},

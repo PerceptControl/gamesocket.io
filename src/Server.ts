@@ -1,22 +1,18 @@
 import uWS from 'uWebSockets.js'
 import { Namespace } from './EventSystem/Namespace/Namespace'
 import { v4 as uuid4 } from 'uuid'
+import SocketPool from './ServerAPI/SocketPool'
 
 var app = uWS.App()
 
 export class Server {
-  private static sockets: any = new Map()
-
-  static namespace(name: string) {
+  public static namespace(name: string): Namespace {
     isString('namespace', name)
     name.trim()
     if (name[0] === '/') name = name.substring(1)
 
-    var namespace
-
-    if (Namespace.pool.has(name)) {
-      namespace = Namespace.pool.get(name)
-    } else {
+    var namespace = Namespace.pool.get(name)
+    if (!namespace) {
       namespace = new Namespace(name)
       Namespace.pool.set(name, namespace)
       namespace.on('open', Server.defaultOpen.bind(namespace))
@@ -26,50 +22,46 @@ export class Server {
     return namespace
   }
 
-  static setHandler(namespace: string, behavior: uWS.WebSocketBehavior) {
+  public static setHandler(namespace: string, behavior: uWS.WebSocketBehavior) {
     app.ws('/' + namespace, behavior)
   }
 
-  static listen(port: number, callback: (ls: uWS.us_listen_socket) => void) {
+  public static listen(
+    port: number,
+    callback: (ls: uWS.us_listen_socket) => void,
+  ) {
     for (let [name, space] of Namespace.pool) {
       this.setHandler(name, space.behavior)
     }
     app.listen(port, callback)
   }
 
-  static getSocket(id: string) {
-    return Server.sockets.get(id)
-  }
-
-  static _addSocket(id: string, socket: uWS.WebSocket) {
-    Server.sockets.set(id, socket)
-  }
-
-  static _removeSocket(id: string) {
-    Server.sockets.delete(id)
-  }
-
-  static _publish(room: string, event: string) {
+  public static publish(room: string, event: string) {
     app.publish(room, event, true, true)
   }
 
-  private static async defaultOpen(socket: uWS.WebSocket) {
-    if (socket.uuid) Server._addSocket(socket.uuid, socket)
+  private static async defaultOpen(this: Namespace, socket: uWS.WebSocket) {
+    if (socket.uuid) SocketPool.Sockets.add(socket.uuid, socket)
     else {
       socket.uuid = uuid4()
-      Server._addSocket(socket.uuid, socket)
+      SocketPool.Sockets.add(socket.uuid, socket)
     }
 
-    socket.subscribe(this.name)
     socket.namespace = this.name
+    Server.namespace(this.name).to('broadcast').join(socket.uuid)
 
     this.sockets[socket.uuid] = true
     console.log(`Socket ${socket.uuid} connected to ${this.name}`)
   }
 
-  private static async defaultClose(socket: uWS.WebSocket, code: number) {
-    Server._removeSocket(socket.uuid)
-    this.sockets[socket.uuid] = undefined
+  private static async defaultClose(
+    this: Namespace,
+    socket: uWS.WebSocket,
+    code: number,
+  ) {
+    var uuid = socket.uuid
+    if (uuid) this.sockets[uuid] = false
+    SocketPool.Sockets.remove(socket.uuid)
     console.log(`Socket ${socket.uuid} disconnected with code ${code}`)
   }
 }

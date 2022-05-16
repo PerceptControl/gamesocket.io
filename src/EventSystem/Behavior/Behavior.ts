@@ -1,19 +1,19 @@
 import { DataManager } from '../../DataManager/DataManager'
 import uWS from 'uWebSockets.js'
+import { messageHandler } from '../../index'
 
-export type openHandler = (socket: uWS.WebSocket) => void
-export type closeHandler = (
+interface customBehavior {
+  structure: uWS.WebSocketBehavior
+  handlers: Map<string, messageHandler>
+}
+
+type openHandler = (socket: uWS.WebSocket) => void
+
+type closeHandler = (
   ws: uWS.WebSocket,
   code?: number,
   message?: ArrayBuffer,
 ) => void
-
-export type customHandler = (socketId: string, manager: DataManager) => void
-
-interface customBehavior {
-  structure: uWS.WebSocketBehavior
-  handlers: Map<string, any>
-}
 
 export class WsBehavior {
   private behavior: customBehavior = {
@@ -25,9 +25,6 @@ export class WsBehavior {
     },
     handlers: new Map(),
   }
-
-  public manager: any
-  public events: any
 
   constructor() {
     this.behavior.structure.message = this.messageHandler.bind({
@@ -44,7 +41,7 @@ export class WsBehavior {
     this.behavior.structure.close = callback
   }
 
-  set(eventName: string, callback: customHandler) {
+  set(eventName: string, callback: messageHandler) {
     this.behavior.handlers.set(eventName, callback)
   }
 
@@ -52,12 +49,18 @@ export class WsBehavior {
     return this.behavior.structure
   }
 
-  private messageHandler(userSocket: uWS.WebSocket, message: ArrayBuffer) {
+  private messageHandler(
+    this: { manager: DataManager; events: Map<string, messageHandler> },
+    userSocket: uWS.WebSocket,
+    message: ArrayBuffer,
+  ) {
     this.manager.packet = message
-    var event = this.manager.get('meta/event')
-    if (this.events.has(event))
-      this.events.get(event)(userSocket.uuid, this.manager)
-    else if (this.events.has('undefined event'))
-      this.events.get('undefined event')(userSocket.uuid, event)
+    var eventName: string = this.manager.get('meta/event')
+
+    var eventHandler: messageHandler | undefined = this.events.get(eventName)
+    var undefinedHandler: messageHandler | undefined =
+      this.events.get('undefined event')
+    if (eventHandler) eventHandler(userSocket.uuid, this.manager)
+    else if (undefinedHandler) undefinedHandler(userSocket.uuid, this.manager)
   }
 }

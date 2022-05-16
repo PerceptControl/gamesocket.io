@@ -27,7 +27,7 @@ export class WsBehavior {
   }
 
   constructor() {
-    this.behavior.structure.message = this.messageHandler.bind({
+    this.behavior.structure.message = messageHandler.bind({
       manager: new DataManager(),
       events: this.behavior.handlers,
     })
@@ -48,19 +48,19 @@ export class WsBehavior {
   get Handler(): uWS.WebSocketBehavior {
     return this.behavior.structure
   }
+}
 
-  private messageHandler(
-    this: { manager: DataManager; events: Map<string, messageHandler> },
-    userSocket: uWS.WebSocket,
-    message: ArrayBuffer,
-  ) {
-    this.manager.packet = message
-    var eventName: string = this.manager.get('meta/event')
+async function messageHandler(
+  this: { manager: DataManager; events: Map<string, messageHandler> },
+  userSocket: uWS.WebSocket,
+  message: ArrayBuffer,
+) {
+  this.manager.packet = message
+  var eventName: string = this.manager.get('meta/event')
 
-    var eventHandler: messageHandler | undefined = this.events.get(eventName)
-    var undefinedHandler: messageHandler | undefined =
-      this.events.get('undefined event')
-    if (eventHandler) eventHandler(userSocket.uuid, this.manager)
-    else if (undefinedHandler) undefinedHandler(userSocket.uuid, this.manager)
-  }
+  var eventHandler: messageHandler | undefined = this.events.get(eventName)
+  var undefinedHandler: messageHandler | undefined =
+    this.events.get('undefined event')
+  if (eventHandler) eventHandler(userSocket.uuid, this.manager)
+  else if (undefinedHandler) undefinedHandler(userSocket.uuid, this.manager)
 }

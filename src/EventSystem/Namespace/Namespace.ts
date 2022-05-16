@@ -1,16 +1,11 @@
-import {
-  closeHandler,
-  customHandler,
-  openHandler,
-  WsBehavior,
-} from '../Behavior/Behavior'
-import { ServerProxy } from '../ServerProxy'
+import { eventData } from '../..'
+import { WsBehavior } from '../Behavior/Behavior'
 import { RoomsController } from '../RoomsController/RoomsController'
 
 export class Namespace {
-  static pool = new Map()
-  public sockets: any = new Array()
   private spaceBehavior = new WsBehavior()
+  public static pool: Map<string, Namespace>
+  public sockets: { [key: string]: boolean } = {}
 
   constructor(public name: string) {}
 
@@ -31,8 +26,8 @@ export class Namespace {
     }
   }
 
-  emit(eventName: string, eventData: object = {}, eventMeta: object = {}) {
-    ServerProxy.emit(this.name, eventName, eventData, eventMeta, 'path')
+  emit(eventName: string, ...eventData: eventData) {
+    this.to('broadcast').emit(eventName, ...eventData)
   }
 
   has(id: string) {

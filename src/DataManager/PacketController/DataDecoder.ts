@@ -1,5 +1,5 @@
 import { StringDecoder } from 'string_decoder'
-import { PacketStructure } from '../StructureConfig'
+import { PacketStructure } from '../..'
 
 //Конвертирует получаемые по сокетам данные в объект(ArrayBuffer to String)
 
@@ -16,10 +16,6 @@ export class DataDecoder {
     } catch (e) {
       throw e
     }
-  }
-
-  set config(configObject: PacketStructure) {
-    this.configObject = configObject
   }
 
   private isCorrect(): boolean {

@@ -1,18 +1,15 @@
 import { Packet } from '../Packet/Packet'
-import { PacketStructure, PacketStructureConfig } from '../StructureConfig'
+import { DefaultPacketStructure } from '../PacketStructure.config'
 import { DataDecoder } from './DataDecoder'
 
 export class PacketController {
-  private packet = new Packet(PacketStructureConfig)
-  private decoder = new DataDecoder(PacketStructureConfig)
+  private packet = new Packet()
+  private decoder = new DataDecoder(DefaultPacketStructure)
 
   setData(socketData: ArrayBuffer) {
     let packetObject = this.decoder.getObject(socketData)
-    this.packet = new Packet(packetObject)
-  }
-
-  set config(newConfig: PacketStructure) {
-    this.decoder.config = newConfig
+    this.packet = new Packet()
+    this.packet.object = packetObject
   }
 
   get(propPath: string) {

@@ -17,11 +17,11 @@ export class DataManager {
     return this.controller.get(propPath)
   }
 
-  static toString(packet: Packet) {
-    return JSON.stringify(packet.data)
+  public static createPacket() {
+    return PacketFactory.new()
   }
 
-  static createPacket() {
-    return PacketFactory.new()
+  public static toString(packet: Packet) {
+    return JSON.stringify(packet.data)
   }
 }

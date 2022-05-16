@@ -1,94 +1,61 @@
-import { ServerProxy } from '../ServerProxy'
-
-interface Destination {
-  object: string | Array<string>
-  type: string
-}
+import { ServerProxy } from '../../ServerAPI/ServerProxy'
+import { Destination, eventData } from '../..'
 
 export class RoomsController {
   private destination: Destination = {
-    object: String(),
-    type: String(),
+    path: String(),
+    type: undefined,
   }
 
   constructor(destination: string | Array<string>, caller: string) {
-    switch (typeof destination) {
-      case 'string': {
-        if (!isUUID(destination)) {
-          this.destination.object = destination.startsWith(caller + '/')
-            ? destination
-            : caller + '/' + destination
-          this.destination.type = 'path'
-        } else {
-          this.destination.object = destination
-          this.destination.type = 'socket'
+    if (destination instanceof Array) {
+      this.destination.path = new Array()
+      for (let room of destination) {
+        if (room == 'all' || room == '#' || room == '*' || room == caller) {
+          this.destination.path = caller + '/#'
+          break
         }
-        break
+        room = room.startsWith(caller + '/') ? room : caller + '/' + room
+        this.destination.path.push(room)
       }
-
-      case 'object': {
-        if (destination instanceof Array) {
-          this.destination.object = new Array()
-          this.destination.type = 'group'
-
-          for (let room of destination) {
-            room = room.startsWith(caller + '/') ? room : caller + '/' + room
-            this.destination.object.push(room)
-            if (room == 'all' || room == '#' || room == '*' || room == caller) {
-              this.destination.object = caller + '/#'
-              this.destination.type = 'path'
-              break
-            }
-          }
-        }
+    } else {
+      if (isUUID(destination)) {
+        this.destination.type = 'socket'
+        this.destination.path = destination
+      } else {
+        this.destination.type = 'path'
+        this.destination.path = destination.startsWith(caller + '/')
+          ? destination
+          : caller + '/' + destination
       }
     }
   }
 
-  emit(eventName: string, eventData: object = {}, eventMeta: object = {}) {
+  emit(eventName: string, ...eventData: eventData) {
     ServerProxy.emit(
-      this.destination.object,
+      this.destination.path,
       eventName,
-      eventData,
-      eventMeta,
       this.destination.type,
+      ...eventData,
     )
   }
 
   join(id: string) {
     let socket = ServerProxy.getSocket(id)
-    switch (this.destination.type) {
-      case 'group': {
-        for (var path of this.destination.object) socket.subscribe(path)
-        break
-      }
-
-      case 'path': {
-        socket.subscribe(this.destination.object)
-        break
-      }
-
-      default:
-        break
-    }
+    if (!socket) return false
+    if (this.destination.path instanceof Array) {
+      for (var path of this.destination.path) socket.subscribe(path)
+    } else socket.subscribe(this.destination.path)
+    return true
   }
 
   leave(id: string) {
     let socket = ServerProxy.getSocket(id)
-    switch (this.destination.type) {
-      case 'group': {
-        for (var path of this.destination.object) socket.unsubscribe(path)
-        break
-      }
-
-      case 'path': {
-        socket.unsubscribe(this.destination.object)
-        break
-      }
-
-      default:
-        break
-    }
+    if (!socket) return false
+    if (this.destination.path instanceof Array) {
+      for (var path of this.destination.path) socket.unsubscribe(path)
+    } else socket.unsubscribe(this.destination.path)
+    return true
   }
 }
 

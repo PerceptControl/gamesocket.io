@@ -1,24 +1,25 @@
-import { PacketStructure } from '../StructureConfig'
-
+import { PacketStructure } from '../..'
+import { DefaultPacketStructure } from '../PacketStructure.config'
 export class Packet {
-  constructor(private packetObject: PacketStructure) {}
+  private packetObject: PacketStructure = DefaultPacketStructure
 
   set(propPath: string, propValue: any) {
-    let path: Array<string> = parseDataPath(propPath)
-    if (path.length !== 2) throw new PathError('segment/name', propPath)
+    let path = parseDataPath(propPath)
     this.packetObject[path[0]][path[1]] = propValue
   }
 
   get(propPath: string) {
-    let path: Array<string> = parseDataPath(propPath)
-    if (path.length !== 2) throw new PathError('segment/name', propPath)
+    let path = parseDataPath(propPath)
     return this.packetObject[path[0]][path[1]]
   }
 
   remove(propPath: string) {
-    let path: Array<string> = parseDataPath(propPath)
-    if (path.length !== 2) throw new PathError('segment/name', propPath)
+    let path = parseDataPath(propPath)
     this.packetObject[path[0]][path[1]] = undefined
+  }
+
+  set object(newPacketObject: PacketStructure) {
+    this.packetObject = newPacketObject
   }
 
   get data(): PacketStructure {
@@ -26,13 +27,16 @@ export class Packet {
   }
 }
 
+function parseDataPath(dataPath: string): ['meta' | 'data', string] {
+  var path = dataPath.split('/')
+  if ((path[0] === 'meta' || path[0] === 'data') && path.length === 2)
+    return [path[0], path[1]]
+  throw new PathError('segment(meta/data)/name', dataPath)
+}
+
 class PathError extends Error {
   constructor(configPath: string, getPath: string) {
     var errorMessage = `Path parameter shall be ${configPath}. Get ${getPath}`
     super(errorMessage)
   }
-}
-
-function parseDataPath(dataPath: string): Array<string> {
-  return dataPath.split('/')
 }

@@ -1,5 +1,5 @@
 import { Server } from '../Server'
-import { eventData } from '..'
+import { eventData, packetInnerObject, PacketStructure } from '..'
 import { DataManager } from '../DataManager/DataManager'
 import SocketPool from './SocketPool'
 
@@ -28,27 +28,43 @@ export class ServerEmitter {
 
   private static createPacket(eventName: string, ...eventData: eventData) {
     var eventPacket = DataManager.createPacket()
-    eventPacket.set('meta/event', eventName)
     switch (eventData.length) {
       case 0: {
+        eventPacket.set('meta/event', eventName)
         return eventPacket
       }
 
       case 1: {
-        eventPacket.object = eventData[0]
+        let data = eventData[0]
+        if (isObjectPacketStructure(data)) {
+          eventPacket.object = data
+          eventPacket.set('meta/event', eventName)
+          return eventPacket
+        } else copyPacketFromEntries(eventPacket, data)
         return eventPacket
       }
 
       case 2: {
-        var data = eventData[0]
-        var meta = eventData[1]
+        let data = eventData[0]
+        let meta = eventData[1]
 
-        for (var [key, value] of Object.entries(data))
-          eventPacket.set(`data/${key}`, value)
-        for (var [key, value] of Object.entries(meta))
-          eventPacket.set(`meta/${key}`, value)
+        copyPacketFromEntries(eventPacket, data)
+        copyPacketFromEntries(eventPacket, meta, 'meta')
         return eventPacket
       }
     }
   }
+}
+
+function copyPacketFromEntries(
+  packet: { set(name: string, data: any): void },
+  eventObject: packetInnerObject,
+  propertyName: 'meta' | 'data' = 'data',
+) {
+  for (var [key, value] of Object.entries(eventObject))
+    packet.set(`${propertyName}/${key}`, value)
+}
+
+function isObjectPacketStructure(object: any): object is PacketStructure {
+  return 'meta' in object || 'data' in object
 }

@@ -4,9 +4,10 @@ class Aliases {
   private static socketAliases: Map<string, string> = new Map()
 
   public static set(socketId: string, socketAlias: string) {
-    if (Sockets.get(socketId)) this.socketAliases.set(socketAlias, socketId)
-    else return false
-    return true
+    if (Sockets.get(socketId)) {
+      this.socketAliases.set(socketAlias, socketId)
+      return true
+    } else return false
   }
 
   public static change(oldSocketAlias: string, newSocketAlias: string) {
@@ -20,19 +21,6 @@ class Aliases {
 
   public static remove(socketAlias: string) {
     return this.socketAliases.delete(socketAlias)
-  }
-
-  public static getSocket(socketAlias: string) {
-    var socketId = this.socketAliases.get(socketAlias)
-    if (socketId) {
-      var socket = Sockets.get(socketId)
-      if (socket) return socket
-      else {
-        Sockets.remove(socketId)
-        this.remove(socketAlias)
-        return false
-      }
-    } else return false
   }
 
   public static getId(socketAlias: string) {

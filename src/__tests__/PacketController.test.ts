@@ -35,27 +35,24 @@ describe('Packet controller', () => {
 
 describe('Packet decoder', () => {
   var decoder: DataDecoder, socketData: any, configObject: PacketStructure
+  beforeEach(() => {
+    decoder = new DataDecoder()
 
-  describe('Test with corrupted data', () => {
-    beforeEach(() => {
-      decoder = new DataDecoder()
-      configObject = {
-        meta: {},
-        data: {},
-      }
-
-      socketData = JSON.stringify({
-        meta: {
-          login: 'testLogin',
-        },
-        data: {
-          password: 'testPassword',
-        },
-      })
+    socketData = JSON.stringify({
+      meta: {
+        login: 'testLogin',
+      },
+      data: {
+        password: 'testPassword',
+      },
     })
+  })
 
-    test('set string as ArrayBuffer', () => {
-      expect(() => decoder.getObject(socketData)).toThrow(Error)
-    })
+  test('set string as ArrayBuffer', () => {
+    expect(() => decoder.getObject(socketData)).toThrow(Error)
+  })
+
+  test('get object from ArrayBuffer', () => {
+    expect(decoder.getObject(stb(socketData))).toEqual(JSON.parse(socketData))
   })
 })

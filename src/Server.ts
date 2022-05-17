@@ -1,11 +1,14 @@
 import uWS from 'uWebSockets.js'
-import { Namespace } from './EventSystem/Namespace/Namespace'
 import { v4 as uuid4 } from 'uuid'
+
 import SocketPool from './ServerAPI/SocketPool'
+import { Namespace } from './EventSystem/Namespace/Namespace'
+
+import { TypeError } from './Errors'
 
 var app = uWS.App()
 
-export class Server {
+class Server {
   public static namespace(name: string): Namespace {
     isString('namespace', name)
     name.trim()
@@ -20,10 +23,6 @@ export class Server {
     }
 
     return namespace
-  }
-
-  public static setHandler(namespace: string, behavior: uWS.WebSocketBehavior) {
-    app.ws('/' + namespace, behavior)
   }
 
   public static listen(
@@ -64,16 +63,18 @@ export class Server {
     SocketPool.Sockets.remove(socket.uuid)
     console.log(`Socket ${socket.uuid} disconnected with code ${code}`)
   }
-}
 
-function isString(entity: any, value: unknown) {
-  if (typeof value !== 'string')
-    throw new TypeError(entity, 'string', typeof value)
-}
-
-class TypeError extends Error {
-  constructor(entity: any, configType: string, getType: string) {
-    var errorMessage = `${entity} shall have ${configType} type. Get ${getType}`
-    super(errorMessage)
+  private static setHandler(
+    namespace: string,
+    behavior: uWS.WebSocketBehavior,
+  ) {
+    app.ws('/' + namespace, behavior)
   }
 }
+
+function isString(entityName: string, value: unknown) {
+  if (typeof value !== 'string')
+    throw new TypeError(entityName, 'string', typeof value)
+}
+
+export { Server, SocketPool }

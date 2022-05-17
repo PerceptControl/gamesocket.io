@@ -1,5 +1,7 @@
 import { PacketStructure } from '../..'
 import { DefaultPacketStructure } from '../PacketStructure.config'
+import { PathError } from '../../Errors'
+
 export class Packet {
   private packetObject: PacketStructure = DefaultPacketStructure
 
@@ -32,11 +34,4 @@ function parseDataPath(dataPath: string): ['meta' | 'data', string] {
   if ((path[0] === 'meta' || path[0] === 'data') && path.length === 2)
     return [path[0], path[1]]
   throw new PathError('segment(meta/data)/name', dataPath)
-}
-
-class PathError extends Error {
-  constructor(configPath: string, getPath: string) {
-    var errorMessage = `Path parameter shall be ${configPath}. Get ${getPath}`
-    super(errorMessage)
-  }
 }

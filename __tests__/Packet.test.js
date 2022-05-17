@@ -1,8 +1,7 @@
-import { Packet } from '../DataManager/Packet/Packet'
-import { PacketStructure } from '../index'
+import { Packet } from '../lib/DataManager/Packet/Packet.js'
 
 describe('Packet class', () => {
-  var packet: Packet, packetObject: PacketStructure
+  var packet, packetObject
 
   beforeEach(() => {
     packetObject = {
@@ -44,7 +43,7 @@ describe('Packet class', () => {
   })
 
   describe('With wrong data', () => {
-    var errorMessage: any, randomString: string
+    var errorMessage, randomString
 
     beforeEach(() => {
       randomString = (Math.random() + 1).toString(36).substring(5)

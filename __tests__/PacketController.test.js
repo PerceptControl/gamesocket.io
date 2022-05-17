@@ -1,10 +1,9 @@
-import { DataDecoder } from '../DataManager/PacketController/DataDecoder'
-import { PacketController } from '../DataManager/PacketController/PacketController'
-import { PacketStructure } from '../index'
+import { DataDecoder } from '../lib/DataManager/PacketController/DataDecoder.js'
+import { PacketController } from '../lib/DataManager/PacketController/PacketController.js'
 var stb = require('string-to-arraybuffer')
 
 describe('Packet controller', () => {
-  var controller: PacketController, socketData: string
+  var controller, socketData
 
   describe('Test with correct data', () => {
     beforeEach(() => {
@@ -34,7 +33,7 @@ describe('Packet controller', () => {
 })
 
 describe('Packet decoder', () => {
-  var decoder: DataDecoder, socketData: any, configObject: PacketStructure
+  var decoder, socketData
   beforeEach(() => {
     decoder = new DataDecoder()
 

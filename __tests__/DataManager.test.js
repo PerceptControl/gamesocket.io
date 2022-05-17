@@ -1,10 +1,10 @@
-import { DataManager } from '../DataManager/DataManager'
-import { Packet } from '../DataManager/Packet/Packet'
+import { DataManager } from '../lib/DataManager/DataManager.js'
+import { Packet } from '../lib/DataManager/Packet/Packet.js'
 
 var stb = require('string-to-arraybuffer')
 
 describe('Data manager', () => {
-  var manager: DataManager, socketData: string
+  var manager, socketData
 
   beforeEach(() => {
     manager = new DataManager()

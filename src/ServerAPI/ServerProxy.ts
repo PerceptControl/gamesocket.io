@@ -29,7 +29,7 @@ export class ServerProxy extends Server {
     return SocketPool.Sockets.get(id)
   }
   public static addId(id: string, socket: WebSocket) {
-    SocketPool.Sockets.add(id, socket)
+    SocketPool.Sockets.set(id, socket)
   }
   public static removeId(id: string) {
     SocketPool.Sockets.remove(id)

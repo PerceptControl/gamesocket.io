@@ -37,12 +37,12 @@ class Sockets {
     return this.sockets.get(id)
   }
 
-  public static add(id: string, socket: WebSocket) {
+  public static set(id: string, socket: WebSocket) {
     this.sockets.set(id, socket)
   }
 
   public static remove(id: string) {
-    this.sockets.delete(id)
+    return this.sockets.delete(id)
   }
 }
 

@@ -7,31 +7,20 @@ export class RoomsController {
     type: undefined,
   }
 
-  constructor(destination: string | Array<string>, caller: string) {
+  constructor(destination: string | Array<string>, callerName: string) {
     if (destination instanceof Array) {
-      this.destination.path = new Array()
-      for (let room of destination) {
-        if (room == 'all' || room == '#' || room == '*' || room == caller) {
-          this.destination.path = caller + '/#'
-          break
-        }
-        room = room.startsWith(caller + '/') ? room : caller + '/' + room
-        this.destination.path.push(room)
-      }
+      this.setDestinationArray(destination, callerName)
     } else {
       if (isUUID(destination)) {
-        this.destination.type = 'socket'
-        this.destination.path = destination
+        this.setDestinationPath('socket', destination)
       } else {
-        this.destination.type = 'path'
-        this.destination.path = destination.startsWith(caller + '/')
-          ? destination
-          : caller + '/' + destination
+        destination = this.getCorrectRoomPath(destination, callerName)
+        this.setDestinationPath('path', destination)
       }
     }
   }
 
-  emit(eventName: string, ...eventData: eventData) {
+  public emit(eventName: string, ...eventData: eventData) {
     ServerProxy.emit(
       this.destination.path,
       eventName,
@@ -40,7 +29,7 @@ export class RoomsController {
     )
   }
 
-  join(id: string) {
+  public join(id: string) {
     let socket = ServerProxy.getSocket(id)
     if (!socket) return false
     if (this.destination.path instanceof Array) {
@@ -49,13 +38,35 @@ export class RoomsController {
     return true
   }
 
-  leave(id: string) {
+  public leave(id: string) {
     let socket = ServerProxy.getSocket(id)
     if (!socket) return false
     if (this.destination.path instanceof Array) {
       for (var path of this.destination.path) socket.unsubscribe(path)
     } else socket.unsubscribe(this.destination.path)
     return true
+  }
+
+  private getCorrectRoomPath(uncheckedRoomPath: string, callerName: string) {
+    return uncheckedRoomPath.startsWith(callerName + '/')
+      ? uncheckedRoomPath
+      : callerName + '/' + uncheckedRoomPath
+  }
+
+  private setDestinationArray(
+    destinationArray: Array<string>,
+    callerName: string,
+  ) {
+    this.destination.path = Array()
+    for (let path of destinationArray) {
+      path = this.getCorrectRoomPath(path, callerName)
+      this.destination.path.push(path)
+    }
+  }
+
+  private setDestinationPath(type: 'path' | 'socket', path: string) {
+    this.destination.type = type
+    this.destination.path = path
   }
 }
 

@@ -1,27 +1,22 @@
 import { StringDecoder } from 'string_decoder'
 import { PacketStructure } from '../..'
+import { DefaultPacketStructure } from '../PacketStructure.config'
 
 //Конвертирует получаемые по сокетам данные в объект(ArrayBuffer to String)
-
 export class DataDecoder {
-  private decodedData: any
-  constructor(private configObject: PacketStructure) {}
+  constructor() {}
 
   public getObject(socketData: ArrayBuffer): PacketStructure {
-    try {
-      this.decodedData = this.toObject(socketData)
-      if (this.isCorrect()) {
-        return this.decodedData
-      } else throw new Error('Wrong packet format')
-    } catch (e) {
-      throw e
-    }
+    let decodedData = this.toObject(socketData)
+    if (this.isCorrect(decodedData)) {
+      return decodedData
+    } else throw new Error('Wrong packet format')
   }
 
-  private isCorrect(): boolean {
+  private isCorrect(decodedData: object): boolean {
     let keys = {
-      config: Object.keys(this.configObject),
-      data: Object.keys(this.decodedData),
+      config: Object.keys(DefaultPacketStructure),
+      data: Object.keys(decodedData),
     }
 
     if (equals(keys.config, keys.data)) return true

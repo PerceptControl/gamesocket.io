@@ -3,7 +3,7 @@
   "version": "1.1.0",
   "description": "Simple API lie socket.io based on uWebSocket.js",
   "main": "./lib/Server.js",
-  "types": "./lib/index.d.ts",
+  "types": "./src/index.d.ts",
   "keywords": [
     "socket",
     "event"

@@ -53,8 +53,6 @@ describe('Packet decoder', () => {
           password: 'testPassword',
         },
       })
-
-      decoder.config = configObject
     })
 
     test('set string as ArrayBuffer', () => {

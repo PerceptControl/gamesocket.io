@@ -3,6 +3,7 @@
   "version": "1.0.3",
   "description": "Simple API lie socket.io based on uWebSocket.js",
   "main": "./lib/Server.js",
+  "types": "./lib/index.d.ts",
   "keywords": [
     "socket",
     "event"
@@ -28,8 +29,6 @@
   "devDependencies": {
     "@types/jest": "^27.5.1",
     "@types/node": "^17.0.33",
-    "@types/uuid": "^8.3.4",
-    "@types/uws": "^0.13.3",
     "jest": "^28.1.0",
     "string-to-arraybuffer": "^1.0.2",
     "ts-jest": "^28.0.2"

@@ -40,7 +40,10 @@ export class ServerEmitter {
           eventPacket.object = data
           eventPacket.set('meta/event', eventName)
           return eventPacket
-        } else copyPacketFromEntries(eventPacket, data)
+        } else {
+          eventPacket.set('meta/event', eventName)
+          copyPacketFromEntries(eventPacket, data)
+        }
         return eventPacket
       }
 
@@ -48,6 +51,7 @@ export class ServerEmitter {
         let data = eventData[0]
         let meta = eventData[1]
 
+        eventPacket.set('meta/event', eventName)
         copyPacketFromEntries(eventPacket, data)
         copyPacketFromEntries(eventPacket, meta, 'meta')
         return eventPacket

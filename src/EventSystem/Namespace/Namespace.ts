@@ -4,7 +4,7 @@ import { RoomsController } from '../RoomsController/RoomsController.js'
 
 export class Namespace {
   private spaceBehavior = new WsBehavior()
-  public static pool: Map<string, Namespace>
+  public static pool: Map<string, Namespace> = new Map()
   public sockets: { [key: string]: boolean } = {}
 
   constructor(public name: string) {}

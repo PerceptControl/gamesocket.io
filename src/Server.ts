@@ -6,7 +6,7 @@ import { Namespace } from './EventSystem/Namespace/Namespace'
 
 import { TypeError } from './Errors'
 
-var app = uWS.App()
+const app = uWS.App()
 
 class Server {
   public static namespace(name: string): Namespace {

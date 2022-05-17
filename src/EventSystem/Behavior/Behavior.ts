@@ -1,6 +1,6 @@
-import { DataManager } from '../../DataManager/DataManager'
+import { DataManager } from '../../DataManager/DataManager.js'
 import uWS from 'uWebSockets.js'
-import { messageHandler } from '../../index'
+import { messageHandler } from '../../index.js'
 
 interface customBehavior {
   structure: uWS.WebSocketBehavior

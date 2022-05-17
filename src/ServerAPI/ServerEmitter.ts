@@ -1,7 +1,7 @@
-import { Server } from '../Server'
+import { Server } from '../Server.js'
 import { eventData, packetInnerObject, PacketStructure } from '..'
-import { DataManager } from '../DataManager/DataManager'
-import SocketPool from './SocketPool'
+import { DataManager } from '../DataManager/DataManager.js'
+import SocketPool from './SocketPool.js'
 
 export class ServerEmitter {
   static toRoomPath(room: string, eventName: string, ...eventData: eventData) {

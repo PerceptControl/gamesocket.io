@@ -1,5 +1,5 @@
-import { Packet } from '../Packet/Packet'
-import { DataDecoder } from './DataDecoder'
+import { Packet } from '../Packet/Packet.js'
+import { DataDecoder } from './DataDecoder.js'
 import { PacketStructure } from '../..'
 
 export class PacketController {

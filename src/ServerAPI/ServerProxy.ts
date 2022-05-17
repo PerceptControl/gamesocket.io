@@ -1,8 +1,8 @@
-import { Server } from '../Server'
+import { Server } from '../Server.js'
 import { WebSocket } from 'uWebSockets.js'
 import { eventData } from '..'
-import { ServerEmitter } from './ServerEmitter'
-import SocketPool from './SocketPool'
+import { ServerEmitter } from './ServerEmitter.js'
+import SocketPool from './SocketPool.js'
 
 export class ServerProxy extends Server {
   public static emit(

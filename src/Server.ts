@@ -1,10 +1,10 @@
 import uWS from 'uWebSockets.js'
 import { v4 as uuid4 } from 'uuid'
 
-import SocketPool from './ServerAPI/SocketPool'
-import { Namespace } from './EventSystem/Namespace/Namespace'
+import SocketPool from './ServerAPI/SocketPool.js'
+import { Namespace } from './EventSystem/Namespace/Namespace.js'
 
-import { TypeError } from './Errors'
+import { TypeError } from './Errors.js'
 
 const app = uWS.App()
 

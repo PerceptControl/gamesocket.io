@@ -1,6 +1,6 @@
 import { PacketStructure as structure } from '../..'
-import { DefaultPacketStructure } from '../PacketStructure.config'
-import { PathError } from '../../Errors'
+import { DefaultPacketStructure } from '../PacketStructure.config.js'
+import { PathError } from '../../Errors.js'
 
 export class Packet {
   private packetObject: structure = DefaultPacketStructure

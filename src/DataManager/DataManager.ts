@@ -1,6 +1,6 @@
-import { PacketController } from './PacketController/PacketController'
-import { PacketFactory } from './PacketFactory/PacketFactory'
-import { Packet } from './Packet/Packet'
+import { PacketController } from './PacketController/PacketController.js'
+import { PacketFactory } from './PacketFactory/PacketFactory.js'
+import { Packet } from './Packet/Packet.js'
 
 export class DataManager {
   private controller = new PacketController()

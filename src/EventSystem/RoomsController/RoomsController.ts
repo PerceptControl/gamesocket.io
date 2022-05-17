@@ -1,4 +1,4 @@
-import { ServerProxy } from '../../ServerAPI/ServerProxy'
+import { ServerProxy } from '../../ServerAPI/ServerProxy.js'
 import { Destination, eventData } from '../..'
 
 export class RoomsController {

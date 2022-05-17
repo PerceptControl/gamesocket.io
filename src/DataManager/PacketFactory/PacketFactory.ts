@@ -1,4 +1,4 @@
-import { Packet } from '../Packet/Packet'
+import { Packet } from '../Packet/Packet.js'
 
 export class PacketFactory {
   static new() {

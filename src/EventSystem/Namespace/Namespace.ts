@@ -1,6 +1,6 @@
 import { eventData } from '../..'
-import { WsBehavior } from '../Behavior/Behavior'
-import { RoomsController } from '../RoomsController/RoomsController'
+import { WsBehavior } from '../Behavior/Behavior.js'
+import { RoomsController } from '../RoomsController/RoomsController.js'
 
 export class Namespace {
   private spaceBehavior = new WsBehavior()

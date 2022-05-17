@@ -1,9 +1,9 @@
-import { PacketStructure } from '../..'
+import { PacketStructure as structure } from '../..'
 import { DefaultPacketStructure } from '../PacketStructure.config'
 import { PathError } from '../../Errors'
 
 export class Packet {
-  private packetObject: PacketStructure = DefaultPacketStructure
+  private packetObject: structure = DefaultPacketStructure
 
   set(propPath: string, propValue: any) {
     let path = parseDataPath(propPath)
@@ -20,11 +20,11 @@ export class Packet {
     this.packetObject[path[0]][path[1]] = undefined
   }
 
-  set object(newPacketObject: PacketStructure) {
+  set object(newPacketObject: structure) {
     this.packetObject = newPacketObject
   }
 
-  get data(): PacketStructure {
+  get data(): structure {
     return this.packetObject
   }
 }

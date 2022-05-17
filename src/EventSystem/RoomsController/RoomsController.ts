@@ -14,7 +14,10 @@ export class RoomsController {
       if (isUUID(destination)) {
         this.setDestinationPath('socket', destination)
       } else {
-        destination = this.getCorrectRoomPath(destination, callerName)
+        destination = RoomsController.getCorrectRoomPath(
+          destination,
+          callerName,
+        )
         this.setDestinationPath('path', destination)
       }
     }
@@ -47,7 +50,10 @@ export class RoomsController {
     return true
   }
 
-  private getCorrectRoomPath(uncheckedRoomPath: string, callerName: string) {
+  private static getCorrectRoomPath(
+    uncheckedRoomPath: string,
+    callerName: string,
+  ) {
     return uncheckedRoomPath.startsWith(callerName + '/')
       ? uncheckedRoomPath
       : callerName + '/' + uncheckedRoomPath
@@ -59,7 +65,7 @@ export class RoomsController {
   ) {
     this.destination.path = Array()
     for (let path of destinationArray) {
-      path = this.getCorrectRoomPath(path, callerName)
+      path = RoomsController.getCorrectRoomPath(path, callerName)
       this.destination.path.push(path)
     }
   }

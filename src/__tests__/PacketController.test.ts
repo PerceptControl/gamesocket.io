@@ -1,7 +1,6 @@
 import { DataDecoder } from '../DataManager/PacketController/DataDecoder'
 import { PacketController } from '../DataManager/PacketController/PacketController'
 import { PacketStructure } from '../index'
-import { DefaultPacketStructure } from '../DataManager/PacketStructure.config'
 var stb = require('string-to-arraybuffer')
 
 describe('Packet controller', () => {
@@ -39,7 +38,7 @@ describe('Packet decoder', () => {
 
   describe('Test with corrupted data', () => {
     beforeEach(() => {
-      decoder = new DataDecoder(DefaultPacketStructure)
+      decoder = new DataDecoder()
       configObject = {
         meta: {},
         data: {},

@@ -40,10 +40,10 @@ class Server {
   }
 
   private static async defaultOpen(this: Namespace, socket: uWS.WebSocket) {
-    if (socket.uuid) SocketPool.Sockets.add(socket.uuid, socket)
+    if (socket.uuid) SocketPool.Sockets.set(socket.uuid, socket)
     else {
       socket.uuid = uuid4()
-      SocketPool.Sockets.add(socket.uuid, socket)
+      SocketPool.Sockets.set(socket.uuid, socket)
     }
 
     socket.namespace = this.name

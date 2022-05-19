@@ -1,7 +1,8 @@
 import { Server } from '../Server.js'
-import { eventData, packetInnerObject, PacketStructure } from '..'
+import { eventData, PacketStructure } from '..'
 import { DataManager } from '../DataManager/DataManager.js'
 import SocketPool from './SocketPool.js'
+import { DefaultPacketStructure } from '../DataManager/PacketStructure.config.js'
 
 export class ServerEmitter {
   static toRoomPath(room: string, eventName: string, ...eventData: eventData) {
@@ -28,6 +29,7 @@ export class ServerEmitter {
 
   private static createPacket(eventName: string, ...eventData: eventData) {
     var eventPacket = DataManager.createPacket()
+    var newPacketObject = DefaultPacketStructure
     switch (eventData.length) {
       case 0: {
         eventPacket.set('meta/event', eventName)
@@ -37,36 +39,28 @@ export class ServerEmitter {
       case 1: {
         let data = eventData[0]
         if (isObjectPacketStructure(data)) {
+          data.meta['event'] = eventName
           eventPacket.object = data
-          eventPacket.set('meta/event', eventName)
+
           return eventPacket
         } else {
-          eventPacket.set('meta/event', eventName)
-          copyPacketFromEntries(eventPacket, data)
+          newPacketObject.meta['event'] = eventName
+          newPacketObject.data = data
+
+          eventPacket.object = newPacketObject
         }
         return eventPacket
       }
 
       case 2: {
-        let data = eventData[0]
-        let meta = eventData[1]
+        newPacketObject.meta = { event: eventName, ...eventData[1] }
+        newPacketObject.data = eventData[0]
 
-        eventPacket.set('meta/event', eventName)
-        copyPacketFromEntries(eventPacket, data)
-        copyPacketFromEntries(eventPacket, meta, 'meta')
+        eventPacket.object = newPacketObject
         return eventPacket
       }
     }
   }
-}
-
-function copyPacketFromEntries(
-  packet: { set(name: string, data: any): void },
-  eventObject: packetInnerObject,
-  propertyName: 'meta' | 'data' = 'data',
-) {
-  for (var [key, value] of Object.entries(eventObject))
-    packet.set(`${propertyName}/${key}`, value)
 }
 
 function isObjectPacketStructure(object: any): object is PacketStructure {

@@ -1,19 +1,23 @@
 {
   "name": "gamesocket.io",
   "version": "1.1.4",
-  "description": "Simple API lie socket.io based on uWebSocket.js",
-  "main": "./lib/Server.js",
-  "types": "./src/index.d.ts",
+  "description": "Simple event-oriented API for uWebSocket.js",
+  "author": "Egor Kungurzev <sa1rac.work@gmail.com>",
+  "license": "ISC",
   "keywords": [
     "socket",
     "event"
   ],
   "type": "module",
-  "author": "Egor Kungurzev <sa1rac.work@gmail.com>",
-  "license": "ISC",
+  "main": "./lib/Server.js",
+  "types": "./src/index.d.ts",
   "dependencies": {
     "uuid": "^8.3.2",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PerceptControl/gamesocket.io"
   },
   "scripts": {
     "test": "jest --config ./jest.config.json",
@@ -29,13 +33,13 @@
   "devDependencies": {
     "@babel/core": "^7.17.12",
     "@babel/node": "^7.17.10",
-    "@babel/preset-env": "^7.17.12",
-    "@types/jest": "^27.5.1",
     "@types/node": "^17.0.33",
     "@types/uuid": "^8.3.4",
     "babel-jest": "^28.1.0",
     "jest": "^28.1.0",
-    "string-to-arraybuffer": "^1.0.2",
-    "ts-jest": "^28.0.2"
+    "string-to-arraybuffer": "^1.0.2"
+  },
+  "engines": {
+    "node": ">=16.11.0"
   }
 }

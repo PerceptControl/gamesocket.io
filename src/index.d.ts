@@ -22,7 +22,7 @@ export interface Server {
   getSocket(id: string): WebSocket | undefined
 }
 
-//Abstraction for App().ws(namespae, behavior)
+//Abstraction for App().ws(namespace, behavior)
 export interface Namespace {
   //Provides API to communicate with server sockets and rooms
   to(destination: Array<string> | string): RoomsController
@@ -42,9 +42,11 @@ export interface Namespace {
 export interface Aliases {
   set(socketId: string, socketAlias: string): boolean
 
+  isSet(socketAlias: string): boolean
+
   getId(socketAlias: string): string | false
 
-  change(oldSocketAlias: string, newSocketAlias: string): boolean
+  swap(oldSocketAlias: string, newSocketAlias: string): boolean
 
   remove(socketAlias: string): boolean
 }

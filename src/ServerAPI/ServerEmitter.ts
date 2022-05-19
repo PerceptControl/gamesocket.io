@@ -16,7 +16,7 @@ export class ServerEmitter {
     if (socket) socket.send(DataManager.toString(eventPacket), true, true)
   }
 
-  static toGroup(
+  static toRoomArray(
     rooms: Array<string>,
     eventName: string,
     ...eventData: eventData

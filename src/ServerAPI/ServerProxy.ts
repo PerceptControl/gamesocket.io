@@ -11,7 +11,7 @@ export class ServerProxy {
     ...eventData: eventData
   ) {
     if (destination instanceof Array) {
-      ServerEmitter.toGroup(destination, eventName, ...eventData)
+      ServerEmitter.toRoomArray(destination, eventName, ...eventData)
     } else {
       switch (destinationType) {
         case 'socket':

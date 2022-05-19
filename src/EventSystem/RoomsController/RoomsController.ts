@@ -1,5 +1,6 @@
 import { ServerProxy } from '../../ServerAPI/ServerProxy.js'
 import { Destination, eventData } from '../..'
+import { validate as uuidValidate, version as uuidVersion } from 'uuid'
 
 export class RoomsController {
   private destination: Destination = {
@@ -11,7 +12,7 @@ export class RoomsController {
     if (destination instanceof Array) {
       this.setDestinationArray(destination, callerName)
     } else {
-      if (isUUID(destination)) {
+      if (uuidValidate(destination)) {
         this.setDestinationPath('socket', destination)
       } else {
         destination = RoomsController.getCorrectRoomPath(
@@ -74,15 +75,4 @@ export class RoomsController {
     this.destination.type = type
     this.destination.path = path
   }
-}
-
-function isUUID(s: string) {
-  var match = s.match(
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
-  )
-
-  if (match) {
-    return match.input == s
-  }
-  return false
 }

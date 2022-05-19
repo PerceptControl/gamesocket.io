@@ -10,7 +10,11 @@ class Aliases {
     } else return false
   }
 
-  public static change(oldSocketAlias: string, newSocketAlias: string) {
+  public static isSet(socketAlias: string) {
+    return this.socketAliases.has(socketAlias)
+  }
+
+  public static swap(oldSocketAlias: string, newSocketAlias: string) {
     var socketId = this.socketAliases.get(oldSocketAlias)
     if (socketId) {
       this.remove(oldSocketAlias)

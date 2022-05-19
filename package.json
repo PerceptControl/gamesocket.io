@@ -5,8 +5,15 @@
   "author": "Egor Kungurzev <sa1rac.work@gmail.com>",
   "license": "ISC",
   "keywords": [
-    "socket",
-    "event"
+    "uwebsocket.js",
+    "websocket",
+    "websocket server",
+    "events",
+    "websocket server API",
+    "realtime",
+    "tcp",
+    "io",
+    "gamesocket"
   ],
   "type": "module",
   "main": "./lib/Server.js",

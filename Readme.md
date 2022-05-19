@@ -41,7 +41,7 @@ var test = Server.namespace('test')
 test.to('room').emit('someEvent')
 
 //emit to custom socket
-test.to('someSocketId').emit('someEvent')
+test.to(someSocketId).emit('someEvent')
 
 //emit to custom rooms in namepsace
 test.to(['room1', 'room2']).emit('someEvent')
@@ -91,7 +91,7 @@ test.on('login', (socketId, manager) => {
   var login = manager.get('data/login')
   var password = manager.get('data/password')
 
-  if(login == 'anAwesomeName' && password == "hardPassword)
+  if(login == 'anAwesomeName' && password == "hardPassword")
   // ...
 })
 ```

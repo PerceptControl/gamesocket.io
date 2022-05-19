@@ -1,7 +1,7 @@
 import { StringDecoder } from 'string_decoder'
 var decoder = new StringDecoder('utf8')
 
-//Конвертирует получаемые по сокетам данные в объект(ArrayBuffer to String)
+//Converts binary socket data to object(ArrayBuffer to JSON)
 export class DataDecoder {
   public getObject(socketData: unknown): unknown {
     return this.toObject(socketData)

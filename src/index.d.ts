@@ -1,6 +1,6 @@
 /**
  * Authored by Egor Kungurzev
- * To communicate with me, write to the mail sa1rac.work@gmail.com
+ * To communicate with me, please write to the sa1rac.work@gmail.com
  */
 
 import { us_listen_socket, WebSocket, WebSocketBehavior } from 'uWebSockets.js'

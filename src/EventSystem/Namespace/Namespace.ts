@@ -1,3 +1,4 @@
+import { WebSocket } from 'uWebSockets.js'
 import { eventData } from '../..'
 import { WsBehavior } from '../Behavior/Behavior.js'
 import { RoomsController } from '../RoomsController/RoomsController.js'
@@ -9,13 +10,13 @@ export class Namespace {
 
   constructor(public name: string) {}
 
-  to(destination: Array<string> | string) {
+  public to(destination: Array<string> | string) {
     if (destination == 'all' || destination == '#' || destination == '*')
       return new RoomsController('#', this.name)
     else return new RoomsController(destination, this.name)
   }
 
-  on(eventName: string, callback: any) {
+  public on(eventName: string, callback: any) {
     switch (eventName) {
       case 'open':
         this.spaceBehavior.open = callback
@@ -26,11 +27,17 @@ export class Namespace {
     }
   }
 
-  emit(eventName: string, ...eventData: eventData) {
+  public emit(eventName: string, ...eventData: eventData) {
     this.to('broadcast').emit(eventName, ...eventData)
   }
 
-  has(id: string) {
+  public attach(socket: WebSocket) {
+    socket.namespace = this.name
+    this.to('broadcast').join(socket.id)
+    this.sockets[socket.uuid] = true
+  }
+
+  public has(id: any) {
     return this.sockets[id]
   }
 

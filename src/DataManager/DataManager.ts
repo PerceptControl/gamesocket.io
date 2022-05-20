@@ -9,7 +9,11 @@ export class DataManager {
     this.controller.setData(buffer)
   }
 
-  get data(): string {
+  get object() {
+    return this.controller.getObject()
+  }
+
+  get string(): string {
     return this.controller.toString()
   }
 

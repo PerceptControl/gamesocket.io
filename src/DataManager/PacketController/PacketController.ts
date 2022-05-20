@@ -17,6 +17,10 @@ export class PacketController {
     return this.packet.get(propPath)
   }
 
+  getObject() {
+    return this.packet.data
+  }
+
   toString() {
     return JSON.stringify(this.packet.data)
   }

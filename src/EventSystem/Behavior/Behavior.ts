@@ -61,6 +61,6 @@ async function messageHandler(
   var eventHandler: messageHandler | undefined = this.events.get(eventName)
   var undefinedHandler: messageHandler | undefined =
     this.events.get('undefined event')
-  if (eventHandler) eventHandler(userSocket.uuid, this.manager)
-  else if (undefinedHandler) undefinedHandler(userSocket.uuid, this.manager)
+  if (eventHandler) eventHandler(userSocket.id, this.manager)
+  else if (undefinedHandler) undefinedHandler(userSocket.id, this.manager)
 }

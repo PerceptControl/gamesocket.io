@@ -1,5 +1,5 @@
 import { ServerProxy } from '../../ServerAPI/ServerProxy.js'
-import { Destination, eventData } from '../..'
+import { Destination, eventData, socketId } from '../..'
 import { validate as uuidValidate, version as uuidVersion } from 'uuid'
 
 export class RoomsController {
@@ -33,7 +33,7 @@ export class RoomsController {
     )
   }
 
-  public join(id: string) {
+  public join(id: socketId) {
     let socket = ServerProxy.getSocket(id)
     if (!socket) return false
     if (this.destination.path instanceof Array) {
@@ -42,7 +42,7 @@ export class RoomsController {
     return true
   }
 
-  public leave(id: string) {
+  public leave(id: socketId) {
     let socket = ServerProxy.getSocket(id)
     if (!socket) return false
     if (this.destination.path instanceof Array) {

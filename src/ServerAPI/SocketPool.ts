@@ -1,11 +1,12 @@
 import { WebSocket } from 'uWebSockets.js'
+import { socketId } from '..'
 
 class Aliases {
   private static socketAliases: Map<string, string> = new Map()
 
-  public static set(socketId: string, socketAlias: string) {
-    if (Sockets.get(socketId)) {
-      this.socketAliases.set(socketAlias, socketId)
+  public static set(id: socketId, socketAlias: string) {
+    if (Sockets.get(id)) {
+      this.socketAliases.set(socketAlias, id)
       return true
     } else return false
   }
@@ -37,15 +38,15 @@ class Aliases {
 class Sockets {
   private static sockets: Map<string, WebSocket> = new Map()
 
-  public static get(id: string): WebSocket | undefined {
+  public static get(id: socketId): WebSocket | undefined {
     return this.sockets.get(id)
   }
 
-  public static set(id: string, socket: WebSocket) {
+  public static set(id: socketId, socket: WebSocket) {
     this.sockets.set(id, socket)
   }
 
-  public static remove(id: string) {
+  public static remove(id: socketId) {
     return this.sockets.delete(id)
   }
 }

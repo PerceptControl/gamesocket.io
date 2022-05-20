@@ -1,5 +1,5 @@
 import { WebSocket } from 'uWebSockets.js'
-import { eventData } from '..'
+import { eventData, socketId } from '..'
 import { ServerEmitter } from './ServerEmitter.js'
 import SocketPool from './SocketPool.js'
 
@@ -24,13 +24,13 @@ export class ServerProxy {
     }
   }
 
-  public static getSocket(id: string) {
+  public static getSocket(id: socketId) {
     return SocketPool.Sockets.get(id)
   }
-  public static addId(id: string, socket: WebSocket) {
+  public static addId(id: socketId, socket: WebSocket) {
     SocketPool.Sockets.set(id, socket)
   }
-  public static removeId(id: string) {
+  public static removeId(id: socketId) {
     SocketPool.Sockets.remove(id)
   }
 }

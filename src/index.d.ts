@@ -87,3 +87,5 @@ export type eventData =
   | [PacketStructure]
   | [packetInnerObject]
   | [packetInnerObject, packetInnerObject]
+
+export type socketId = string

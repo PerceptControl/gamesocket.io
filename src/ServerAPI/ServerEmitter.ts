@@ -1,5 +1,5 @@
 import { Server } from '../Server.js'
-import { eventData, PacketStructure } from '..'
+import { eventData, PacketStructure, socketId } from '..'
 import { DataManager } from '../DataManager/DataManager.js'
 import SocketPool from './SocketPool.js'
 import { DefaultPacketStructure } from '../DataManager/PacketStructure.config.js'
@@ -10,7 +10,7 @@ export class ServerEmitter {
     Server.publish(room, DataManager.toString(eventPacket))
   }
 
-  static toSocket(id: string, eventName: string, ...eventData: eventData) {
+  static toSocket(id: socketId, eventName: string, ...eventData: eventData) {
     var eventPacket = this.createPacket(eventName, ...eventData)
     var socket = SocketPool.Sockets.get(id)
     if (socket) socket.send(DataManager.toString(eventPacket), true, true)

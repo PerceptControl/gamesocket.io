@@ -1,5 +1,6 @@
 import { WebSocket } from 'uWebSockets.js'
-import { eventData } from '../..'
+import { eventData, socketId } from '../..'
+import { DataManager } from '../../DataManager/DataManager'
 import { WsBehavior } from '../Behavior/Behavior.js'
 import { RoomsController } from '../RoomsController/RoomsController.js'
 
@@ -16,15 +17,25 @@ export class Namespace {
     else return new RoomsController(destination, this.name)
   }
 
-  public on(eventName: string, callback: any) {
-    switch (eventName) {
-      case 'open':
-        this.spaceBehavior.open = callback
-      case 'close':
-        this.spaceBehavior.close = callback
-      default:
-        this.spaceBehavior.set(eventName, callback)
-    }
+  public onopen(callback: (socket: WebSocket) => void | Promise<void>) {
+    this.spaceBehavior.open = callback
+  }
+
+  public onclose(
+    callback: (
+      socket: WebSocket,
+      code?: number,
+      message?: ArrayBuffer,
+    ) => void | Promise<void>,
+  ) {
+    this.spaceBehavior.close = callback
+  }
+
+  public on(
+    eventName: string,
+    callback: (id?: socketId, manager?: DataManager) => void | Promise<void>,
+  ) {
+    this.spaceBehavior.set(eventName, callback)
   }
 
   public emit(eventName: string, ...eventData: eventData) {

@@ -19,8 +19,8 @@ class Server {
     if (!namespace) {
       namespace = new Namespace(name)
       Namespace.pool.set(name, namespace)
-      namespace.on('open', Server.defaultOpen)
-      namespace.on('close', Server.defaultClose)
+      namespace.onopen(Server.defaultOpen.bind({ name: name }))
+      namespace.onclose(Server.defaultClose)
     }
 
     return namespace
@@ -55,12 +55,19 @@ class Server {
     }
   }
 
-  private static async defaultOpen(name: string, socket: uWS.WebSocket) {
+  private static async defaultOpen(
+    this: { name: string },
+    socket: uWS.WebSocket,
+  ) {
     Server.attachIdToSocket(uuid4(), socket)
-    Server.namespace(name).attach(socket)
+    Server.namespace(this.name).attach(socket)
   }
 
-  private static async defaultClose(socket: uWS.WebSocket, code: number) {
+  private static async defaultClose(
+    socket: uWS.WebSocket,
+    code?: number,
+    message?: ArrayBuffer,
+  ) {
     console.log(
       `${socket.namespace}: socket ${socket.id} disconnected with code ${code}`,
     )

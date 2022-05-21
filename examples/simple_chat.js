@@ -2,7 +2,7 @@ import { Server, SocketPool } from '../lib/Server.js'
 import { v4 as uuid } from 'uuid'
 
 var main = Server.namespace('main')
-main.on('open', (socket) => {
+main.onopen((socket) => {
   Server.attachIdToSocket(uuid(), socket)
   main.attach(socket)
 
@@ -67,7 +67,7 @@ main.on('leave', (socketId, manager) => {
   }
 })
 
-main.on('close', (socket) => {
+main.onclose((socket) => {
   console.log(`Main close: ${socket.id} disconnected!`)
   Server.eraseSocket(socket)
 })

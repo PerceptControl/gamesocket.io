@@ -7,9 +7,20 @@ import { Namespace } from './EventSystem/Namespace/Namespace.js'
 import Errors from './Errors.js'
 import { socketId } from './index.js'
 
-const app = uWS.App()
+type defaultOpenHandler = (
+  this: { name: string },
+  socket: uWS.WebSocket,
+) => void | Promise<void>
+
+type defaultCloseHandler = (
+  socket: uWS.WebSocket,
+  code?: number,
+  message?: ArrayBuffer,
+) => void | Promise<void>
 
 class Server {
+  public static wsServer = uWS.App()
+
   public static namespace(name: string): Namespace {
     Errors.Functions.isType.string('namespace', name)
     name.trim()
@@ -33,11 +44,11 @@ class Server {
     for (let [name, space] of Namespace.pool) {
       Server.setHandler(name, space.behavior)
     }
-    app.listen(port, callback)
+    this.wsServer.listen(port, callback)
   }
 
   public static publish(room: string, event: string) {
-    app.publish(room, event, true, true)
+    this.wsServer.publish(room, event, true, true)
   }
 
   public static attachIdToSocket(id: socketId, socket: uWS.WebSocket) {
@@ -55,7 +66,22 @@ class Server {
     }
   }
 
-  private static async defaultOpen(
+  public static setOpen(callback: defaultOpenHandler) {
+    this.defaultOpen = callback
+  }
+
+  public static setClose(callback: defaultCloseHandler) {
+    this.defaultClose = callback
+  }
+
+  private static setHandler(
+    namespace: string,
+    behavior: uWS.WebSocketBehavior,
+  ) {
+    this.wsServer.ws('/' + namespace, behavior)
+  }
+
+  private static defaultOpen: defaultOpenHandler = async function (
     this: { name: string },
     socket: uWS.WebSocket,
   ) {
@@ -63,22 +89,14 @@ class Server {
     Server.namespace(this.name).attach(socket)
   }
 
-  private static async defaultClose(
+  private static defaultClose: defaultCloseHandler = async function (
     socket: uWS.WebSocket,
     code?: number,
-    message?: ArrayBuffer,
   ) {
     console.log(
       `${socket.namespace}: socket ${socket.id} disconnected with code ${code}`,
     )
     Server.eraseSocket(socket)
-  }
-
-  private static setHandler(
-    namespace: string,
-    behavior: uWS.WebSocketBehavior,
-  ) {
-    app.ws('/' + namespace, behavior)
   }
 }
 

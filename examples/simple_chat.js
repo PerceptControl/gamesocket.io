@@ -1,4 +1,4 @@
-import { Server, SocketPool } from '../lib/Server.js'
+import { Server, SocketPool } from 'gamesocket.io'
 import { v4 as uuid } from 'uuid'
 
 var main = Server.namespace('main')

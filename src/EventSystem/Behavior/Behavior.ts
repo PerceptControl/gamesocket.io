@@ -58,9 +58,8 @@ async function messageHandler(
   this.manager.packet = message
   var eventName: string = this.manager.get('meta/event')
 
-  var eventHandler: messageHandler | undefined = this.events.get(eventName)
-  var undefinedHandler: messageHandler | undefined =
-    this.events.get('undefined event')
+  var eventHandler = this.events.get(eventName)
+  var undefinedHandler = this.events.get('undefined event')
   if (eventHandler) eventHandler(userSocket.id, this.manager)
   else if (undefinedHandler) undefinedHandler(userSocket.id, this.manager)
 }

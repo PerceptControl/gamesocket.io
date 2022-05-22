@@ -1,6 +1,7 @@
-import { ServerProxy } from '../../ServerAPI/ServerProxy.js'
 import { Destination, eventData, socketId } from '../..'
-import { validate as uuidValidate, version as uuidVersion } from 'uuid'
+
+import { validate as uuidValidate } from 'uuid'
+import { ServerProxy } from '../../ServerAPI/ServerProxy.js'
 
 export class RoomsController {
   private destination: Destination = {

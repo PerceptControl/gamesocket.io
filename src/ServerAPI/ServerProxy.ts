@@ -1,5 +1,6 @@
 import { WebSocket } from 'uWebSockets.js'
 import { eventData, socketId } from '..'
+
 import { ServerEmitter } from './ServerEmitter.js'
 import SocketPool from './SocketPool.js'
 

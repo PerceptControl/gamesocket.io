@@ -38,7 +38,7 @@ export class ServerEmitter {
 
       case 1: {
         let data = eventData[0]
-        if (isObjectPacketStructure(data)) {
+        if (objectIsPacketStructure(data)) {
           data.meta['event'] = eventName
           eventPacket.object = data
 
@@ -63,6 +63,6 @@ export class ServerEmitter {
   }
 }
 
-function isObjectPacketStructure(object: any): object is PacketStructure {
+function objectIsPacketStructure(object: any): object is PacketStructure {
   return 'meta' in object || 'data' in object
 }

@@ -1,6 +1,7 @@
-import { WebSocket } from 'uWebSockets.js'
 import { eventData, socketId } from '../..'
+import { WebSocket } from 'uWebSockets.js'
 import { DataManager } from '../../DataManager/DataManager'
+
 import { WsBehavior } from '../Behavior/Behavior.js'
 import { RoomsController } from '../RoomsController/RoomsController.js'
 
@@ -14,7 +15,7 @@ export class Namespace {
   public to(destination: Array<string> | string) {
     if (destination == 'all' || destination == '#' || destination == '*')
       return new RoomsController('#', this.name)
-    else return new RoomsController(destination, this.name)
+    return new RoomsController(destination, this.name)
   }
 
   public onopen(callback: (socket: WebSocket) => void | Promise<void>) {

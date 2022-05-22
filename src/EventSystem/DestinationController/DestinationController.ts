@@ -2,8 +2,14 @@ import { Destination, eventData, socketId } from '../..'
 
 import { validate as uuidValidate } from 'uuid'
 import { ServerProxy } from '../../ServerAPI/ServerProxy.js'
+import { WebSocket } from 'uWebSockets.js'
 
-export class RoomsController {
+const enum actions {
+  JOIN = 'join',
+  LEAVE = 'leave',
+}
+
+export class DestinationController {
   private destination: Destination = {
     path: String(),
     type: undefined,
@@ -16,7 +22,7 @@ export class RoomsController {
       if (uuidValidate(destination)) {
         this.setDestinationPath('socket', destination)
       } else {
-        destination = RoomsController.getCorrectRoomPath(
+        destination = DestinationController.getCorrectRoomPath(
           destination,
           callerName,
         )
@@ -37,18 +43,16 @@ export class RoomsController {
   public join(id: socketId) {
     let socket = ServerProxy.getSocket(id)
     if (!socket) return false
-    if (this.destination.path instanceof Array) {
-      for (var path of this.destination.path) socket.subscribe(path)
-    } else socket.subscribe(this.destination.path)
+
+    this.makeAction(socket, actions.JOIN)
     return true
   }
 
   public leave(id: socketId) {
     let socket = ServerProxy.getSocket(id)
     if (!socket) return false
-    if (this.destination.path instanceof Array) {
-      for (var path of this.destination.path) socket.unsubscribe(path)
-    } else socket.unsubscribe(this.destination.path)
+
+    this.makeAction(socket, actions.LEAVE)
     return true
   }
 
@@ -61,13 +65,28 @@ export class RoomsController {
       : callerName + '/' + uncheckedRoomPath
   }
 
+  private makeAction(socket: WebSocket, actionType: actions) {
+    switch (actionType) {
+      case 'join':
+        if (this.destination.path instanceof Array)
+          for (var path of this.destination.path) socket.subscribe(path)
+        else socket.subscribe(this.destination.path)
+        break
+      case 'leave':
+        if (this.destination.path instanceof Array)
+          for (var path of this.destination.path) socket.unsubscribe(path)
+        else socket.unsubscribe(this.destination.path)
+        break
+    }
+  }
+
   private setDestinationArray(
     destinationArray: Array<string>,
     callerName: string,
   ) {
     this.destination.path = Array()
     for (let path of destinationArray) {
-      path = RoomsController.getCorrectRoomPath(path, callerName)
+      path = DestinationController.getCorrectRoomPath(path, callerName)
       this.destination.path.push(path)
     }
   }

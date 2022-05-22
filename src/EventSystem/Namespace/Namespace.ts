@@ -3,7 +3,7 @@ import { WebSocket } from 'uWebSockets.js'
 import { DataManager } from '../../DataManager/DataManager'
 
 import { WsBehavior } from '../Behavior/Behavior.js'
-import { RoomsController } from '../RoomsController/RoomsController.js'
+import { DestinationController } from '../DestinationController/DestinationController.js'
 
 export class Namespace {
   private spaceBehavior = new WsBehavior()
@@ -14,8 +14,8 @@ export class Namespace {
 
   public to(destination: Array<string> | string) {
     if (destination == 'all' || destination == '#' || destination == '*')
-      return new RoomsController('#', this.name)
-    return new RoomsController(destination, this.name)
+      return new DestinationController('#', this.name)
+    return new DestinationController(destination, this.name)
   }
 
   public onopen(callback: (socket: WebSocket) => void | Promise<void>) {

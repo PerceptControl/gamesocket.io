@@ -4,7 +4,7 @@
  */
 
 import { us_listen_socket, WebSocket, WebSocketBehavior } from 'uWebSockets.js'
-import { RoomsController } from './EventSystem/RoomsController/RoomsController'
+import { DestinationController } from './EventSystem/DestinationController/DestinationController'
 import { DataManager } from './DataManager/DataManager'
 
 //API for use uWebSocket.js library in event style
@@ -25,7 +25,7 @@ export interface Server {
 //Abstraction for App().ws(namespace, behavior)
 export interface Namespace {
   //Provides API to communicate with server sockets and rooms
-  to(destination: Array<string> | string): RoomsController
+  to(destination: Array<string> | string): DestinationController
 
   //Sets custom handler on selected event
   on(eventName: string, callback: any): void
@@ -73,13 +73,7 @@ export type packetInnerObject = {
 export type packetKey = string | number
 
 //Definition of callback which used by Namespace.on('customEvevent')
-export type messageHandler = (socketId: string, manager: DataManager) => void
-
-//Definition of Namespace.to() arguments
-export type Destination = {
-  path: string | Array<string>
-  type: 'path' | 'socket' | undefined
-}
+export type messageHandler = (id: socketId, manager: DataManager) => void
 
 //Definition of data object variants which uses emit method
 export type eventData =

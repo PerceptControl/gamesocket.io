@@ -26,31 +26,51 @@ SocketPool.Aliases.swap(socketAlias, 'someNewAlias')
 SocketPool.Aliases.getId('someNewAlias')
 ```
 
-#### Namespace & room support
+#### Namespace support
 
-You can use many namespaces and rooms depending on your needs.
+You can use many namespaces depending on your needs.
 
 ```js
 //js
 
 import { Server } from 'gamesocket.io'
 
+//emit to custom room in test namespace
+Server.namespace('test').control('room').emit('someEvent')
+
+//emit to custom socket in admin namespace
+Server.namespace('admin').control(socketId).emit('someEvent')
+```
+
+#### Adaptive destination controller
+
+You can use rooms and sockets in much ways.
+
+```js
+//js
+
+import { Server } from 'gamesocket.io'
+
+//create test namespace
 var test = Server.namespace('test')
 
-//emit to custom room
-test.to('room').emit('someEvent')
+//Sockets with ids 1, 2 join rooms 1, 2
+test.control(['room1', 'room2']).join([id1, id2])
 
-//emit to custom socket
-test.to(someSocketId).emit('someEvent')
+//Emits event to rooms 1, 2
+test.control(['room1', 'room2']).emis('someEvent')
 
-//emit to custom rooms in namepsace
-test.to(['room1', 'room2']).emit('someEvent')
+//Emits event to room
+test.control('room').emis('someEvent')
 
-//broadcast to all rooms in namespace
-test.to('all').emit('someEvent')
+//Emits event to sockets with ids 1, 2
+test.control([id1, id2]).emit('someEvent')
 
-//broadcast to all sockets which connected to namespace
-test.emit('someEvent')
+//Sockets with ids 1, 2 join room
+test.control([id1, id2]).join('room')
+
+//Sockets with id1 leaves room
+test.control(id1).leave('room')
 ```
 
 #### Convenient data manager

@@ -42,17 +42,12 @@ export class DestinationRooms implements IDestinationRooms {
     return destination
   }
 
-  private static validatePath(uncheckedRoomPath: string, callerName: string) {
-    if (uncheckedRoomPath.startsWith(callerName + '/')) return uncheckedRoomPath
-    return callerName + '/' + uncheckedRoomPath
-  }
-
   private async chooseAction(sockets: Array<socketId>, actionType: actions) {
     for (let id of sockets) {
       let socket = ServerProxy.getSocket(id)
       if (!socket) throw new Errors.Custom.socketExist(id)
 
-      DestinationRooms.makeAction(socket, actions.LEAVE, this.destination)
+      DestinationRooms.makeAction(socket, actionType, this.destination)
     }
   }
 
@@ -65,5 +60,10 @@ export class DestinationRooms implements IDestinationRooms {
         destination.forEach((path) => socket.unsubscribe(path))
         break
     }
+  }
+
+  private static validatePath(uncheckedRoomPath: string, callerName: string) {
+    if (uncheckedRoomPath.startsWith(callerName + '/')) return uncheckedRoomPath
+    return callerName + '/' + uncheckedRoomPath
   }
 }

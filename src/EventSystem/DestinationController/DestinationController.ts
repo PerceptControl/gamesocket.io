@@ -1,98 +1,35 @@
-import { Destination, eventData, socketId } from '../..'
+import {
+  Destination,
+  destination,
+  IDestinationController,
+} from './Destinations'
 
-import { validate as uuidValidate } from 'uuid'
-import { ServerProxy } from '../../ServerAPI/ServerProxy.js'
-import { WebSocket } from 'uWebSockets.js'
+import { DestinationRooms } from './DestinationRooms.js'
+import { DestinationSocket } from './DestinationSocket.js'
+import { validate } from 'uuid'
+import { eventData } from '../..'
 
-const enum actions {
-  JOIN = 'join',
-  LEAVE = 'leave',
-}
-
-export class DestinationController {
-  private destination: Destination = {
-    path: String(),
-    type: undefined,
-  }
-
-  constructor(destination: string | Array<string>, callerName: string) {
-    if (destination instanceof Array) {
-      this.setDestinationArray(destination, callerName)
-    } else {
-      if (uuidValidate(destination)) {
-        this.setDestinationPath('socket', destination)
-      } else {
-        destination = DestinationController.getCorrectRoomPath(
-          destination,
-          callerName,
-        )
-        this.setDestinationPath('path', destination)
-      }
+export class DestinationController implements IDestinationController {
+  public destination: Destination
+  constructor(destination: destination, callerName: string) {
+    if (destination instanceof Array)
+      this.destination = new DestinationRooms(destination, callerName)
+    else {
+      if (validate(destination))
+        this.destination = new DestinationSocket(destination, callerName)
+      else this.destination = new DestinationRooms(destination, callerName)
     }
   }
 
-  public emit(eventName: string, ...eventData: eventData) {
-    ServerProxy.emit(
-      this.destination.path,
-      eventName,
-      this.destination.type,
-      ...eventData,
-    )
+  emit(eventName: string, ...eventData: eventData): void {
+    this.destination.emit(eventName, ...eventData)
   }
 
-  public join(id: socketId) {
-    let socket = ServerProxy.getSocket(id)
-    if (!socket) return false
-
-    this.makeAction(socket, actions.JOIN)
-    return true
+  join(destination: destination): void {
+    this.destination.join(destination)
   }
 
-  public leave(id: socketId) {
-    let socket = ServerProxy.getSocket(id)
-    if (!socket) return false
-
-    this.makeAction(socket, actions.LEAVE)
-    return true
-  }
-
-  private static getCorrectRoomPath(
-    uncheckedRoomPath: string,
-    callerName: string,
-  ) {
-    return uncheckedRoomPath.startsWith(callerName + '/')
-      ? uncheckedRoomPath
-      : callerName + '/' + uncheckedRoomPath
-  }
-
-  private makeAction(socket: WebSocket, actionType: actions) {
-    switch (actionType) {
-      case 'join':
-        if (this.destination.path instanceof Array)
-          for (var path of this.destination.path) socket.subscribe(path)
-        else socket.subscribe(this.destination.path)
-        break
-      case 'leave':
-        if (this.destination.path instanceof Array)
-          for (var path of this.destination.path) socket.unsubscribe(path)
-        else socket.unsubscribe(this.destination.path)
-        break
-    }
-  }
-
-  private setDestinationArray(
-    destinationArray: Array<string>,
-    callerName: string,
-  ) {
-    this.destination.path = Array()
-    for (let path of destinationArray) {
-      path = DestinationController.getCorrectRoomPath(path, callerName)
-      this.destination.path.push(path)
-    }
-  }
-
-  private setDestinationPath(type: 'path' | 'socket', path: string) {
-    this.destination.type = type
-    this.destination.path = path
+  leave(destination: destination): void {
+    this.destination.leave(destination)
   }
 }

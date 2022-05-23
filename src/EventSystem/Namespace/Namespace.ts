@@ -4,6 +4,7 @@ import { DataManager } from '../../DataManager/DataManager'
 
 import { WsBehavior } from '../Behavior/Behavior.js'
 import { DestinationController } from '../DestinationController/DestinationController.js'
+import { destination } from '../DestinationController/Destinations'
 
 export class Namespace {
   private spaceBehavior = new WsBehavior()
@@ -12,7 +13,7 @@ export class Namespace {
 
   constructor(public name: string) {}
 
-  public to(destination: Array<string> | string) {
+  public control(destination: destination) {
     if (destination == 'all' || destination == '#' || destination == '*')
       return new DestinationController('#', this.name)
     return new DestinationController(destination, this.name)
@@ -40,12 +41,12 @@ export class Namespace {
   }
 
   public emit(eventName: string, ...eventData: eventData) {
-    this.to('broadcast').emit(eventName, ...eventData)
+    this.control('broadcast').emit(eventName, ...eventData)
   }
 
   public attach(socket: WebSocket) {
     socket.namespace = this.name
-    this.to('broadcast').join(socket.id)
+    this.control('broadcast').join(socket.id)
     this.sockets[socket.uuid] = true
   }
 

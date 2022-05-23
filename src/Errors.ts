@@ -1,4 +1,4 @@
-import { WebSocket } from 'uWebSockets.js'
+import { socketId } from '.'
 
 class TypeIs {
   public static string(entityName: string, value: unknown) {
@@ -36,6 +36,13 @@ class PathError extends Error {
   }
 }
 
+class SocketDoesntExist extends Error {
+  constructor(id: socketId) {
+    var errorMessage = `Socket with id ${id} doesn't exist`
+    super(errorMessage)
+  }
+}
+
 var Functions = {
   isType: TypeIs,
 }
@@ -43,6 +50,7 @@ var Functions = {
 var Custom = {
   type: TypeError,
   path: PathError,
+  socketExist: SocketDoesntExist,
 }
 
 export default { Custom, Functions }

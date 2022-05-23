@@ -29,7 +29,7 @@ describe('Data manager', () => {
 
     test('get packet from socket data', () => {
       manager.packet = stb(socketData)
-      expect(manager.data).toBe(socketData)
+      expect(manager.string).toBe(socketData)
     })
 
     test('get some packet data from socket', () => {

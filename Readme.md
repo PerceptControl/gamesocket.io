@@ -58,10 +58,10 @@ var test = Server.namespace('test')
 test.control(['room1', 'room2']).join([id1, id2])
 
 //Emits event to rooms 1, 2
-test.control(['room1', 'room2']).emis('someEvent')
+test.control(['room1', 'room2']).emit('someEvent')
 
 //Emits event to room
-test.control('room').emis('someEvent')
+test.control('room').emit('someEvent')
 
 //Emits event to sockets with ids 1, 2
 test.control([id1, id2]).emit('someEvent')

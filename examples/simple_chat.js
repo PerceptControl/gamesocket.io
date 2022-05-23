@@ -12,11 +12,11 @@ main.onopen((socket) => {
 main.on('login', (socketId, manager) => {
   var userName = manager.get('data/name')
   if (SocketPool.Aliases.isSet(userName))
-    main.to(socketId).emit('User already exist', { name: userName })
+    main.control(socketId).emit('User already exist', { name: userName })
   else {
     SocketPool.Sockets.get(socketId).alias = userName
     SocketPool.Aliases.set(socketId, userName)
-    main.to(socketId).emit('login', {
+    main.control(socketId).emit('login', {
       message: `now your name changed to ${userName}`,
     })
     main.emit('new user', { name: userName })
@@ -31,7 +31,7 @@ main.on('private message', (socketId, manager) => {
   //If packet corrupted or user isn't login
   if (fromSocket.alias && toAlias && message) {
     main
-      .to(toAlias)
+      .control(toAlias)
       .emit('private', { mesasge: message, from: fromSocket.alias })
   }
 })
@@ -44,7 +44,7 @@ main.on('group message', (socketId, manager) => {
 
   if (fromSocket.alias && groupName && message) {
     main
-      .to(groupName)
+      .control(groupName)
       .emit('group', { message: message, from: fromSocket.alias })
   }
 })
@@ -53,8 +53,8 @@ main.on('join', (socketId, manager) => {
   var groupName = manager.get('data/group')
 
   if (groupName) {
-    main.to(groupName).join(socketId)
-    main.to(socketId).emit('join', { group: groupName })
+    main.control(groupName).join(socketId)
+    main.control(socketId).emit('join', { group: groupName })
   }
 })
 
@@ -62,8 +62,8 @@ main.on('leave', (socketId, manager) => {
   var groupName = manager.get('data/group')
 
   if (groupName) {
-    main.to(groupName).leave(socketId)
-    main.to(socketId).emit('leave', { group: groupName })
+    main.control(groupName).leave(socketId)
+    main.control(socketId).emit('leave', { group: groupName })
   }
 })
 

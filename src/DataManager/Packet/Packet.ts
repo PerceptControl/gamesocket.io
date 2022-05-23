@@ -24,14 +24,13 @@ export class Packet {
     this.packetObject = newPacketObject
   }
 
-  get data(): structure {
+  get object(): structure {
     return this.packetObject
   }
 }
 
 function parseDataPath(dataPath: string): ['meta' | 'data', string] {
   var path = dataPath.split('/')
-  if ((path[0] === 'meta' || path[0] === 'data') && path.length === 2)
-    return [path[0], path[1]]
+  if ((path[0] === 'meta' || path[0] === 'data') && path.length === 2) return [path[0], path[1]]
   throw new Errors.Custom.path('segment(meta/data)/name', dataPath)
 }

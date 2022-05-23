@@ -7,16 +7,9 @@ import { Namespace } from './EventSystem/Namespace/Namespace.js'
 import Errors from './Errors.js'
 import { socketId } from './index.js'
 
-type defaultOpenHandler = (
-  this: { name: string },
-  socket: uWS.WebSocket,
-) => void | Promise<void>
+type defaultOpenHandler = (this: { name: string }, socket: uWS.WebSocket) => void | Promise<void>
 
-type defaultCloseHandler = (
-  socket: uWS.WebSocket,
-  code?: number,
-  message?: ArrayBuffer,
-) => void | Promise<void>
+type defaultCloseHandler = (socket: uWS.WebSocket, code?: number, message?: ArrayBuffer) => void | Promise<void>
 
 class Server {
   public static wsServer = uWS.App()
@@ -37,10 +30,7 @@ class Server {
     return namespace
   }
 
-  public static listen(
-    port: number,
-    callback: (ls: uWS.us_listen_socket) => void,
-  ) {
+  public static listen(port: number, callback: (ls: uWS.us_listen_socket) => void) {
     for (let [name, space] of Namespace.pool) {
       Server.setHandler(name, space.behavior)
     }
@@ -58,8 +48,7 @@ class Server {
 
   public static eraseSocket(socket: uWS.WebSocket) {
     try {
-      if (socket.id && typeof socket.namespace == 'string')
-        this.namespace(socket.namespace).sockets[socket.id] = false
+      if (socket.id && typeof socket.namespace == 'string') this.namespace(socket.namespace).sockets[socket.id] = false
       SocketPool.Sockets.remove(socket.id)
     } catch (e) {
       throw e
@@ -74,28 +63,17 @@ class Server {
     this.defaultClose = callback
   }
 
-  private static setHandler(
-    namespace: string,
-    behavior: uWS.WebSocketBehavior,
-  ) {
+  private static setHandler(namespace: string, behavior: uWS.WebSocketBehavior) {
     this.wsServer.ws('/' + namespace, behavior)
   }
 
-  private static defaultOpen: defaultOpenHandler = async function (
-    this: { name: string },
-    socket: uWS.WebSocket,
-  ) {
+  private static defaultOpen: defaultOpenHandler = async function (this: { name: string }, socket: uWS.WebSocket) {
     Server.attachIdToSocket(uuid4(), socket)
     Server.namespace(this.name).attach(socket)
   }
 
-  private static defaultClose: defaultCloseHandler = async function (
-    socket: uWS.WebSocket,
-    code?: number,
-  ) {
-    console.log(
-      `${socket.namespace}: socket ${socket.id} disconnected with code ${code}`,
-    )
+  private static defaultClose: defaultCloseHandler = async function (socket: uWS.WebSocket, code?: number) {
+    console.log(`${socket.namespace}: socket ${socket.id} disconnected with code ${code}`)
     Server.eraseSocket(socket)
   }
 }

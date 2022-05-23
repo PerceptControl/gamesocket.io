@@ -1,8 +1,4 @@
-import {
-  Destination,
-  destination,
-  IDestinationController,
-} from './Destinations'
+import { IDestination, destination, IDestinationController } from './Destinations'
 
 import { DestinationRooms } from './DestinationRooms.js'
 import { DestinationSocket } from './DestinationSocket.js'
@@ -10,13 +6,11 @@ import { validate } from 'uuid'
 import { eventData } from '../..'
 
 export class DestinationController implements IDestinationController {
-  public destination: Destination
+  public destination: IDestination
   constructor(destination: destination, callerName: string) {
-    if (destination instanceof Array)
-      this.destination = new DestinationRooms(destination, callerName)
+    if (destination instanceof Array) this.destination = new DestinationRooms(destination, callerName)
     else {
-      if (validate(destination))
-        this.destination = new DestinationSocket(destination, callerName)
+      if (validate(destination)) this.destination = new DestinationSocket(destination, callerName)
       else this.destination = new DestinationRooms(destination, callerName)
     }
   }

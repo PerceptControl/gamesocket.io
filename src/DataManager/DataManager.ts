@@ -26,6 +26,6 @@ export class DataManager {
   }
 
   public static toString(packet: Packet) {
-    return JSON.stringify(packet.data)
+    return JSON.stringify(packet.object)
   }
 }

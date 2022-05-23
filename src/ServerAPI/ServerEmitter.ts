@@ -16,11 +16,7 @@ export class ServerEmitter {
     if (socket) socket.send(DataManager.toString(eventPacket), true, true)
   }
 
-  static toRoomArray(
-    rooms: Array<string>,
-    eventName: string,
-    ...eventData: eventData
-  ) {
+  static toRoomArray(rooms: Array<string>, eventName: string, ...eventData: eventData) {
     var eventPacket = this.createPacket(eventName, ...eventData)
     for (var room of rooms) {
       Server.publish(room, DataManager.toString(eventPacket))

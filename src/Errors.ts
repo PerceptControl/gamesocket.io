@@ -2,23 +2,19 @@ import { socketId } from '.'
 
 class TypeIs {
   public static string(entityName: string, value: unknown) {
-    if (typeof value !== 'string')
-      throw new TypeError(entityName, 'string', typeof value)
+    if (typeof value !== 'string') throw new TypeError(entityName, 'string', typeof value)
   }
 
   public static number(entityName: string, value: unknown) {
-    if (typeof value !== 'number')
-      throw new TypeError(entityName, 'number', typeof value)
+    if (typeof value !== 'number') throw new TypeError(entityName, 'number', typeof value)
   }
 
   public static boolean(entityName: string, value: unknown) {
-    if (typeof value !== 'boolean')
-      throw new TypeError(entityName, 'boolean', typeof value)
+    if (typeof value !== 'boolean') throw new TypeError(entityName, 'boolean', typeof value)
   }
 
   public static array(entityName: string, value: unknown) {
-    if (!(value instanceof Array))
-      throw new TypeError(entityName, 'array', typeof value)
+    if (!(value instanceof Array)) throw new TypeError(entityName, 'array', typeof value)
   }
 }
 

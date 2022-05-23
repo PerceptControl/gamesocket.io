@@ -8,12 +8,8 @@ export class DataDecoder {
   }
 
   private toObject(socketData: unknown) {
-    if (socketData instanceof ArrayBuffer)
-      return JSON.parse(this.objectFromBuffer(socketData))
-    else
-      throw new Error(
-        `Can't convert such data to object (converting ${socketData})`,
-      )
+    if (socketData instanceof ArrayBuffer) return JSON.parse(this.objectFromBuffer(socketData))
+    else throw new Error(`Can't convert such data to object (converting ${socketData})`)
   }
 
   private objectFromBuffer(bufferedData: ArrayBuffer): string {

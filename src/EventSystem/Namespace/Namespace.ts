@@ -23,20 +23,11 @@ export class Namespace {
     this.spaceBehavior.open = callback
   }
 
-  public onclose(
-    callback: (
-      socket: WebSocket,
-      code?: number,
-      message?: ArrayBuffer,
-    ) => void | Promise<void>,
-  ) {
+  public onclose(callback: (socket: WebSocket, code?: number, message?: ArrayBuffer) => void | Promise<void>) {
     this.spaceBehavior.close = callback
   }
 
-  public on(
-    eventName: string,
-    callback: (id?: socketId, manager?: DataManager) => void | Promise<void>,
-  ) {
+  public on(eventName: string, callback: (id?: socketId, manager?: DataManager) => void | Promise<void>) {
     this.spaceBehavior.set(eventName, callback)
   }
 

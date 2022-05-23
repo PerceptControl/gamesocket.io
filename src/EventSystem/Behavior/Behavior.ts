@@ -9,11 +9,7 @@ interface customBehavior {
 
 type openHandler = (socket: uWS.WebSocket) => void
 
-type closeHandler = (
-  ws: uWS.WebSocket,
-  code?: number,
-  message?: ArrayBuffer,
-) => void
+type closeHandler = (ws: uWS.WebSocket, code?: number, message?: ArrayBuffer) => void
 
 export class WsBehavior {
   private behavior: customBehavior = {

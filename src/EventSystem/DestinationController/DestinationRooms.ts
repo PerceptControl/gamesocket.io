@@ -1,4 +1,4 @@
-import { eventData } from '../..'
+import { eventData, socketId } from '../..'
 import { WebSocket } from 'uWebSockets.js'
 import { IDestinationRooms, actions, destination } from './Destinations'
 
@@ -7,17 +7,13 @@ import { validate } from 'uuid'
 import Errors from '../../Errors.js'
 
 export class DestinationRooms implements IDestinationRooms {
-  private destination: Array<string> = Array()
+  private destination: Array<string> = []
   constructor(destination: destination, private callerName: string) {
     if (!(destination instanceof Array))
-      this.destination.push(
-        DestinationRooms.getCorrectPath(destination, this.callerName),
-      )
+      this.destination.push(DestinationRooms.validatePath(destination, this.callerName))
     else {
       destination.forEach((path) => {
-        this.destination.push(
-          DestinationRooms.getCorrectPath(path, this.callerName),
-        )
+        this.destination.push(DestinationRooms.validatePath(path, this.callerName))
       })
     }
   }
@@ -27,28 +23,17 @@ export class DestinationRooms implements IDestinationRooms {
   }
 
   public join(destination: destination) {
-    var socketsIds = DestinationRooms.validateDestination(destination)
-    for (let id of socketsIds) {
-      let socket = ServerProxy.getSocket(id)
-      if (!socket) throw new Errors.Custom.socketExist(id)
-
-      DestinationRooms.makeAction(socket, actions.JOIN, this.destination)
-    }
+    var sockets = DestinationRooms.validateDestination(destination)
+    this.chooseAction(sockets, actions.JOIN)
   }
 
   public leave(destination: destination) {
-    var socketsIds = DestinationRooms.validateDestination(destination)
-    for (let id of socketsIds) {
-      let socket = ServerProxy.getSocket(id)
-      if (!socket) throw new Errors.Custom.socketExist(id)
-
-      DestinationRooms.makeAction(socket, actions.LEAVE, this.destination)
-    }
+    var sockets = DestinationRooms.validateDestination(destination)
+    this.chooseAction(sockets, actions.LEAVE)
   }
 
   private static validateDestination(destination: destination) {
-    if (destination instanceof Array)
-      destination = destination.filter((id) => validate(id))
+    if (destination instanceof Array) destination = destination.filter((id) => validate(id))
     else {
       if (!validate(destination)) throw Error('Destination must be socket')
       destination = [destination]
@@ -57,26 +42,27 @@ export class DestinationRooms implements IDestinationRooms {
     return destination
   }
 
-  private static getCorrectPath(uncheckedRoomPath: string, callerName: string) {
-    return uncheckedRoomPath.startsWith(callerName + '/')
-      ? uncheckedRoomPath
-      : callerName + '/' + uncheckedRoomPath
+  private static validatePath(uncheckedRoomPath: string, callerName: string) {
+    if (uncheckedRoomPath.startsWith(callerName + '/')) return uncheckedRoomPath
+    return callerName + '/' + uncheckedRoomPath
   }
 
-  private static async makeAction(
-    socket: WebSocket,
-    actionType: actions,
-    destination: Array<string>,
-  ) {
+  private async chooseAction(sockets: Array<socketId>, actionType: actions) {
+    for (let id of sockets) {
+      let socket = ServerProxy.getSocket(id)
+      if (!socket) throw new Errors.Custom.socketExist(id)
+
+      DestinationRooms.makeAction(socket, actions.LEAVE, this.destination)
+    }
+  }
+
+  private static async makeAction(socket: WebSocket, actionType: actions, destination: Array<string>) {
     switch (actionType) {
-      case 'join':
-        for (var path of destination)
-          if (!socket.subscribe(path)) throw Error(`Can't subscribe to ${path}`)
+      case actions.JOIN:
+        destination.forEach((path) => socket.subscribe(path))
         break
-      case 'leave':
-        for (var path of destination)
-          if (!socket.unsubscribe(path))
-            throw Error(`Can't subscribe to ${path}`)
+      case actions.LEAVE:
+        destination.forEach((path) => socket.unsubscribe(path))
         break
     }
   }

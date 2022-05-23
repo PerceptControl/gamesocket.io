@@ -10,7 +10,7 @@ export class DestinationSocket implements IDestinationSocket {
   private id: socketId
   constructor(destination: string, private callerName: string) {
     if (validate(destination)) this.id = destination
-    else throw Error('Destination must be uuid string')
+    else throw new Error('Destination must be uuid string')
   }
 
   public emit(eventName: string, ...eventData: eventData): void {
@@ -18,52 +18,44 @@ export class DestinationSocket implements IDestinationSocket {
   }
 
   public join(rooms: paths): void {
-    let socket = ServerProxy.getSocket(this.id)
-    if (!socket) throw new Errors.Custom.socketExist(this.id)
-
-    DestinationSocket.makeAction(socket, actions.JOIN, rooms, this.callerName)
+    var socket = this.getSocket()
+    DestinationSocket.makeAction(actions.JOIN, socket, rooms, this.callerName)
   }
 
   public leave(rooms: paths): void {
-    let socket = ServerProxy.getSocket(this.id)
-    if (!socket) throw new Errors.Custom.socketExist(this.id)
+    var socket = this.getSocket()
+    DestinationSocket.makeAction(actions.LEAVE, socket, rooms, this.callerName)
+  }
 
-    DestinationSocket.makeAction(socket, actions.LEAVE, rooms, this.callerName)
+  private getSocket() {
+    var socket = ServerProxy.getSocket(this.id)
+    if (!socket) throw new Errors.Custom.socketExist(this.id)
+    return socket
+  }
+
+  private static validatePath(uncheckedRoomPath: string, callerName: string) {
+    if (uncheckedRoomPath.startsWith(callerName + '/')) return uncheckedRoomPath
+    return callerName + '/' + uncheckedRoomPath
   }
 
   private static validateDestination(destination: paths, callerName: string) {
-    if (destination instanceof Array) {
+    if (!(destination instanceof Array)) destination = [DestinationSocket.validatePath(destination, callerName)]
+    else
       destination.forEach((path, id, array) => {
-        array[id] = DestinationSocket.getCorrectPath(path, callerName)
+        array[id] = DestinationSocket.validatePath(path, callerName)
       })
-    } else
-      destination = [DestinationSocket.getCorrectPath(destination, callerName)]
 
     return destination
   }
 
-  private static getCorrectPath(uncheckedRoomPath: string, callerName: string) {
-    return uncheckedRoomPath.startsWith(callerName + '/')
-      ? uncheckedRoomPath
-      : callerName + '/' + uncheckedRoomPath
-  }
-
-  private static async makeAction(
-    socket: WebSocket,
-    actionType: actions,
-    destination: paths,
-    caller: string,
-  ) {
+  private static async makeAction(actionType: actions, socket: WebSocket, destination: paths, caller: string) {
     destination = DestinationSocket.validateDestination(destination, caller)
     switch (actionType) {
-      case 'join':
-        for (var path of destination)
-          if (!socket.subscribe(path)) throw Error(`Can't subscribe to ${path}`)
+      case actions.JOIN:
+        destination.forEach((path) => socket.subscribe(path))
         break
-      case 'leave':
-        for (var path of destination)
-          if (!socket.unsubscribe(path))
-            throw Error(`Can't subscribe to ${path}`)
+      case actions.LEAVE:
+        destination.forEach((path) => socket.unsubscribe(path))
         break
     }
   }

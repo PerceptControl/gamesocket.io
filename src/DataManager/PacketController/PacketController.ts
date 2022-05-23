@@ -18,11 +18,11 @@ export class PacketController {
   }
 
   getObject() {
-    return this.packet.data
+    return this.packet.object
   }
 
   toString() {
-    return JSON.stringify(this.packet.data)
+    return JSON.stringify(this.packet.object)
   }
 }
 

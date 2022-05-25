@@ -13,6 +13,8 @@ type closeHandler = (socket: uWS.WebSocket, code?: number, message?: ArrayBuffer
 
 class Server {
   private static wsServer: uWS.TemplatedApp = uWS.App()
+  private static customOpen: openHandler
+  private static customClose: closeHandler
 
   public static namespace(name: string): Namespace {
     Errors.Functions.isType.string('namespace', name)
@@ -66,9 +68,6 @@ class Server {
   private static setHandler(namespace: string, behavior: uWS.WebSocketBehavior) {
     this.wsServer.ws('/' + namespace, behavior)
   }
-
-  private static customOpen: openHandler
-  private static customClose: closeHandler
 
   private static serverOpen: openHandler = async function (this: { name: string }, socket: uWS.WebSocket) {
     Server.attachIdToSocket(uuid4(), socket)

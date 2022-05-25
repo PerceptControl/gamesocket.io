@@ -5,11 +5,6 @@ import SocketPool from './SocketPool.js'
 import { DefaultPacketStructure } from '../DataManager/PacketStructure.config.js'
 
 export class ServerEmitter {
-  static toRoomPath(room: string, eventName: string, ...eventData: eventData) {
-    var eventPacket = this.createPacket(eventName, ...eventData)
-    Server.publish(room, DataManager.toString(eventPacket))
-  }
-
   static toSocket(id: socketId, eventName: string, ...eventData: eventData) {
     var eventPacket = this.createPacket(eventName, ...eventData)
     var socket = SocketPool.Sockets.get(id)

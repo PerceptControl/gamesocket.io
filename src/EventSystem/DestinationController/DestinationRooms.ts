@@ -19,7 +19,7 @@ export class DestinationRooms implements IDestinationRooms {
   }
 
   public emit(eventName: string, ...eventData: eventData): void {
-    ServerProxy.emit(this.destination, eventName, undefined, ...eventData)
+    ServerProxy.emit(this.destination, eventName, ...eventData)
   }
 
   public join(destination: destination) {

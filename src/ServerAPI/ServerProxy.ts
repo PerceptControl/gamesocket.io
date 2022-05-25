@@ -5,24 +5,9 @@ import { ServerEmitter } from './ServerEmitter.js'
 import SocketPool from './SocketPool.js'
 
 export class ServerProxy {
-  public static emit(
-    destination: string | Array<string>,
-    eventName: string,
-    destinationType?: string,
-    ...eventData: eventData
-  ) {
-    if (destination instanceof Array) {
-      ServerEmitter.toRoomArray(destination, eventName, ...eventData)
-    } else {
-      switch (destinationType) {
-        case 'socket':
-          ServerEmitter.toSocket(destination, eventName, ...eventData)
-          break
-        case 'path':
-          ServerEmitter.toRoomPath(destination, eventName, ...eventData)
-          break
-      }
-    }
+  public static emit(destination: string | Array<string>, eventName: string, ...eventData: eventData) {
+    if (!(destination instanceof Array)) ServerEmitter.toSocket(destination, eventName, ...eventData)
+    else ServerEmitter.toRoomArray(destination, eventName, ...eventData)
   }
 
   public static getSocket(id: socketId) {

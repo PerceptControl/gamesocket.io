@@ -14,7 +14,7 @@ export class DestinationSocket implements IDestinationSocket {
   }
 
   public emit(eventName: string, ...eventData: eventData): void {
-    ServerProxy.emit(this.id, eventName, 'socket', ...eventData)
+    ServerProxy.emit(this.id, eventName, ...eventData)
   }
 
   public join(rooms: paths): void {

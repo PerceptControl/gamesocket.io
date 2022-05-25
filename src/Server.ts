@@ -57,11 +57,11 @@ class Server {
     }
   }
 
-  public static setOpen(callback: openHandler) {
+  public static set open(callback: openHandler) {
     this.customOpen = callback
   }
 
-  public static setClose(callback: closeHandler) {
+  public static set close(callback: closeHandler) {
     this.customClose = callback
   }
 

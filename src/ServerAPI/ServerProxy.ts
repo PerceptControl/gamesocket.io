@@ -2,7 +2,7 @@ import { WebSocket } from 'uWebSockets.js'
 import { eventData, socketId } from '..'
 
 import { ServerEmitter } from './ServerEmitter.js'
-import SocketPool from './SocketPool.js'
+import SocketPool from './PoolConrtoller/PoolController.js'
 
 export class ServerProxy {
   public static emit(destination: string | Array<string>, eventName: string, ...eventData: eventData) {

@@ -1,7 +1,7 @@
 import { Server } from '../Server.js'
 import { eventData, PacketStructure, socketId } from '..'
 import { DataManager } from '../DataManager/DataManager.js'
-import SocketPool from './SocketPool.js'
+import SocketPool from './PoolConrtoller/PoolController.js'
 import { DefaultPacketStructure } from '../DataManager/PacketStructure.config.js'
 
 export class ServerEmitter {

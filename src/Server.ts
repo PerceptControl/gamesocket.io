@@ -1,7 +1,7 @@
 import uWS from 'uWebSockets.js'
 import { v4 as uuid4 } from 'uuid'
 
-import SocketPool from './ServerAPI/SocketPool.js'
+import PoolController from './ServerAPI/PoolConrtoller/PoolController.js'
 import { Namespace } from './EventSystem/Namespace/Namespace.js'
 
 import Errors from './Errors.js'
@@ -45,13 +45,13 @@ class Server {
 
   public static attachIdToSocket(id: socketId, socket: uWS.WebSocket) {
     socket.id = id
-    SocketPool.Sockets.set(socket.id, socket)
+    PoolController.Sockets.set(socket.id, socket)
   }
 
   public static eraseSocket(socket: uWS.WebSocket) {
     try {
       if (socket.id && typeof socket.namespace == 'string') this.namespace(socket.namespace).sockets[socket.id] = false
-      SocketPool.Sockets.remove(socket.id)
+      PoolController.Sockets.remove(socket.id)
     } catch (e) {
       throw e
     }
@@ -85,4 +85,4 @@ class Server {
   }
 }
 
-export { Server, SocketPool }
+export { Server, PoolController }

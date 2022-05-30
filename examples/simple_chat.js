@@ -1,18 +1,16 @@
-import { Server, SocketPool } from 'gamesocket.io'
+import { Server, SocketPool } from '../lib/Server.js'
 import { v4 as uuid } from 'uuid'
 
 var main = Server.namespace('main')
-main.onopen((socket) => {
+Server.open = (socket) => {
   Server.attachIdToSocket(uuid(), socket)
   main.attach(socket)
-
   console.log(`Main open: ${socket.id} connected!`)
-})
+}
 
 main.on('login', (socketId, manager) => {
   var userName = manager.get('data/name')
-  if (SocketPool.Aliases.isSet(userName))
-    main.control(socketId).emit('User already exist', { name: userName })
+  if (SocketPool.Aliases.isSet(userName)) main.control(socketId).emit('User already exist', { name: userName })
   else {
     SocketPool.Sockets.get(socketId).alias = userName
     SocketPool.Aliases.set(socketId, userName)
@@ -30,9 +28,7 @@ main.on('private message', (socketId, manager) => {
 
   //If packet corrupted or user isn't login
   if (fromSocket.alias && toAlias && message) {
-    main
-      .control(toAlias)
-      .emit('private', { mesasge: message, from: fromSocket.alias })
+    main.control(toAlias).emit('private', { mesasge: message, from: fromSocket.alias })
   }
 })
 
@@ -43,18 +39,16 @@ main.on('group message', (socketId, manager) => {
   var message = manager.get('data/message')
 
   if (fromSocket.alias && groupName && message) {
-    main
-      .control(groupName)
-      .emit('group', { message: message, from: fromSocket.alias })
+    main.control(groupName).emit('group', { message: message, from: fromSocket.alias })
   }
 })
 
 main.on('join', (socketId, manager) => {
-  var groupName = manager.get('data/group')
+  var roomName = manager.get('data/room')
 
-  if (groupName) {
-    main.control(groupName).join(socketId)
-    main.control(socketId).emit('join', { group: groupName })
+  if (roomName) {
+    main.control(roomName).join(socketId)
+    main.control(socketId).emit('join', { room: roomName, member: SocketPool.Sockets.get(socketId).alias })
   }
 })
 
@@ -67,10 +61,11 @@ main.on('leave', (socketId, manager) => {
   }
 })
 
-main.onclose((socket) => {
-  console.log(`Main close: ${socket.id} disconnected!`)
+Server.close = (socket) => {
+  SocketPool.Aliases.remove(socket.alias)
   Server.eraseSocket(socket)
-})
+  console.log(`Main close: ${socket.id} disconnected!`)
+}
 
 main.on('undefined event', (socketId, manager) => {
   console.log('Socket %s tried to call %', socketId, manager.get('meta/event'))

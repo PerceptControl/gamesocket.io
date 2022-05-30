@@ -19,7 +19,7 @@ describe('Packet class', () => {
 
   describe('With correct data', () => {
     test('Set packet data object', () => {
-      expect(packet.data).toBe(packetObject)
+      expect(packet.object).toBe(packetObject)
     })
 
     test('Get packet data parameter', () => {

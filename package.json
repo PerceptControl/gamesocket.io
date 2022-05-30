@@ -30,7 +30,7 @@
   },
   "scripts": {
     "test": "jest --config ./jest.config.json",
-    "build": "tsc",
+    "build": "tsc ; npx prettier --config ./.prettierrc.json -w ./",
     "prepublishOnly": "npm test",
     "prepare": "npm run build",
     "version": "git add -A src",

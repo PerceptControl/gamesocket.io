@@ -76,10 +76,6 @@ export type packetKey = string | number
 export type messageHandler = (id: socketId, manager: DataManager) => void
 
 //Definition of data object variants which uses emit method
-export type eventData =
-  | []
-  | [PacketStructure]
-  | [packetInnerObject]
-  | [packetInnerObject, packetInnerObject]
+export type eventData = [] | [PacketStructure] | [packetInnerObject] | [packetInnerObject, packetInnerObject]
 
 export type socketId = string

@@ -1,4 +1,4 @@
-import { Server, SocketPool } from '../lib/Server.js'
+import { Server, PoolController } from '../lib/Server.js'
 import { v4 as uuid } from 'uuid'
 
 var main = Server.namespace('main')
@@ -10,10 +10,10 @@ Server.open = (socket) => {
 
 main.on('login', (socketId, manager) => {
   var userName = manager.get('data/name')
-  if (SocketPool.Aliases.isSet(userName)) main.control(socketId).emit('User already exist', { name: userName })
+  if (PoolController.Aliases.isSet(userName)) main.control(socketId).emit('User already exist', { name: userName })
   else {
-    SocketPool.Sockets.get(socketId).alias = userName
-    SocketPool.Aliases.set(socketId, userName)
+    PoolController.Sockets.get(socketId).alias = userName
+    PoolController.Aliases.set(socketId, userName)
     main.control(socketId).emit('login', {
       message: `now your name changed to ${userName}`,
     })
@@ -22,8 +22,8 @@ main.on('login', (socketId, manager) => {
 })
 
 main.on('private message', (socketId, manager) => {
-  var fromSocket = SocketPool.Sockets.get(socketId)
-  var toAlias = SocketPool.Aliases.getId(manager.get('data/to'))
+  var fromSocket = PoolController.Sockets.get(socketId)
+  var toAlias = PoolController.Aliases.getId(manager.get('data/to'))
   var message = manager.get('data/message')
 
   //If packet corrupted or user isn't login
@@ -33,7 +33,7 @@ main.on('private message', (socketId, manager) => {
 })
 
 main.on('group message', (socketId, manager) => {
-  var fromSocket = SocketPool.Sockets.get(socketId)
+  var fromSocket = PoolController.Sockets.get(socketId)
 
   var groupName = manager.get('data/group')
   var message = manager.get('data/message')
@@ -45,10 +45,9 @@ main.on('group message', (socketId, manager) => {
 
 main.on('join', (socketId, manager) => {
   var roomName = manager.get('data/room')
-
   if (roomName) {
     main.control(roomName).join(socketId)
-    main.control(socketId).emit('join', { room: roomName, member: SocketPool.Sockets.get(socketId).alias })
+    main.control(socketId).emit('join', { room: roomName, member: PoolController.Sockets.get(socketId).alias })
   }
 })
 
@@ -62,7 +61,7 @@ main.on('leave', (socketId, manager) => {
 })
 
 Server.close = (socket) => {
-  SocketPool.Aliases.remove(socket.alias)
+  PoolController.Aliases.remove(socket.alias)
   Server.eraseSocket(socket)
   console.log(`Main close: ${socket.id} disconnected!`)
 }

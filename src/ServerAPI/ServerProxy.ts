@@ -6,8 +6,8 @@ import SocketPool from './PoolConrtoller/PoolController.js'
 
 export class ServerProxy {
   public static emit(destination: string | Array<string>, eventName: string, ...eventData: eventData) {
-    if (!(destination instanceof Array)) ServerEmitter.toSocket(destination, eventName, ...eventData)
-    else ServerEmitter.toRoomArray(destination, eventName, ...eventData)
+    if (!(destination instanceof Array)) ServerEmitter.toSocket(destination, eventName, eventData)
+    else ServerEmitter.toRoomArray(destination, eventName, eventData)
   }
 
   public static getSocket(id: socketId) {

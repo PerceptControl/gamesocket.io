@@ -22,7 +22,7 @@ export class DataManager {
     return this.controller.get(propPath)
   }
 
-  public static createPacket(data: eventData) {
+  public static createPacket(...data: eventData) {
     var packet = PacketFactory.new()
     var packetObject = packet.object
     switch (data.length) {

@@ -18,7 +18,7 @@ export class ServerEmitter {
   }
 
   private static createPacket(eventName: string, eventData: eventData) {
-    var packet = DataManager.createPacket(eventData)
+    var packet = DataManager.createPacket(...eventData)
     packet.set('meta/event', eventName)
     return packet
   }

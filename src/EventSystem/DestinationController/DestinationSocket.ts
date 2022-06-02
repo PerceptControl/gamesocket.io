@@ -7,29 +7,39 @@ import { ServerProxy } from '../../ServerAPI/ServerProxy.js'
 import Errors from '../../Errors.js'
 
 export class DestinationSocket implements IDestinationSocket {
-  private id: socketId
-  constructor(destination: string, private callerName: string) {
-    if (validate(destination)) this.id = destination
-    else throw new Error('Destination must be uuid string')
+  private destination: Array<socketId> = []
+  constructor(destination: Array<string> | string, private callerName: string) {
+    if (destination instanceof Array) {
+      destination.filter((id) => {
+        validate(id)
+      })
+    } else destination = [destination]
+    this.destination = destination
   }
 
   public emit(eventName: string, ...eventData: eventData): void {
-    ServerProxy.emit(this.id, eventName, ...eventData)
+    this.destination.forEach((id) => {
+      ServerProxy.emit(id, eventName, ...eventData)
+    })
   }
 
   public join(rooms: paths): void {
-    var socket = this.getSocket()
-    DestinationSocket.makeAction(actions.JOIN, socket, rooms, this.callerName)
+    this.destination.forEach((id) => {
+      var socket = DestinationSocket.getSocket(id)
+      DestinationSocket.makeAction(actions.JOIN, socket, rooms, this.callerName)
+    })
   }
 
   public leave(rooms: paths): void {
-    var socket = this.getSocket()
-    DestinationSocket.makeAction(actions.LEAVE, socket, rooms, this.callerName)
+    this.destination.forEach((id) => {
+      var socket = DestinationSocket.getSocket(id)
+      DestinationSocket.makeAction(actions.LEAVE, socket, rooms, this.callerName)
+    })
   }
 
-  private getSocket() {
-    var socket = ServerProxy.getSocket(this.id)
-    if (!socket) throw new Errors.Custom.socketExist(this.id)
+  private static getSocket(id: socketId) {
+    var socket = ServerProxy.getSocket(id)
+    if (!socket) throw new Errors.Custom.socketExist(id)
     return socket
   }
 

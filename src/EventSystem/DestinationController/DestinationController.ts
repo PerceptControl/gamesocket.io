@@ -8,10 +8,12 @@ import { eventData } from '../..'
 export class DestinationController implements IDestinationController {
   public destination: IDestination
   constructor(destination: destination, callerName: string) {
-    if (destination instanceof Array) this.destination = new DestinationRooms(destination, callerName)
-    else {
-      if (validate(destination)) this.destination = new DestinationSocket(destination, callerName)
-      else this.destination = new DestinationRooms(destination, callerName)
+    if (!(destination instanceof Array)) {
+      if (!validate(destination)) this.destination = new DestinationRooms(destination, callerName)
+      else this.destination = new DestinationSocket(destination, callerName)
+    } else {
+      if (!validate(destination[0])) this.destination = new DestinationRooms(destination, callerName)
+      else this.destination = new DestinationSocket(destination, callerName)
     }
   }
 

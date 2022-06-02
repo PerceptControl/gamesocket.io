@@ -8,9 +8,8 @@ export class PacketController {
 
   setData(socketData: ArrayBuffer) {
     let packetObject = this.decoder.getObject(socketData)
-    if (isObjectPacketStructure(packetObject)) {
-      this.packet.object = packetObject
-    }
+    if (!objectIsPacketStructure(packetObject)) return false
+    this.packet.object = packetObject
   }
 
   get(propPath: string) {
@@ -26,6 +25,6 @@ export class PacketController {
   }
 }
 
-function isObjectPacketStructure(object: any): object is PacketStructure {
+function objectIsPacketStructure(object: any): object is PacketStructure {
   return 'meta' in object && 'data' in object
 }

@@ -1,4 +1,4 @@
-import { Packet } from '../lib/DataManager/Packet/Packet.js'
+import { Packet } from '../../lib/DataManager/Packet/Packet.js'
 
 describe('Packet class', () => {
   var packet, packetObject

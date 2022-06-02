@@ -38,7 +38,7 @@ export class Namespace {
   public attach(socket: WebSocket) {
     socket.namespace = this.name
     this.control('broadcast').join(socket.id)
-    this.sockets[socket.uuid] = true
+    this.sockets[socket.id] = true
   }
 
   public has(id: any) {

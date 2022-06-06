@@ -155,11 +155,10 @@ In the near future the package will be overgrown with tests and optimized
 
 And soon I probbably add next features:
 
-1. **Custom http server support**
-2. **@types for package**
-3. **Custom packet structure configuration**
-4. **uWebSocket websocket configuration support**
-5. **Node.js worker support**
+1. **@types for package**
+2. **Custom packet structure configuration**
+3. **uWebSocket websocket configuration support**
+4. **Node.js worker support**
 
 And more...
 

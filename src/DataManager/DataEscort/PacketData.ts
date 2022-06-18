@@ -1,4 +1,4 @@
-import { finalData } from '../../types/DataManager'
+import type { finalData } from '../../types/DataManager'
 
 export class PacketData {
   private _data: finalData | undefined

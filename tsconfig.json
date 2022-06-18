@@ -16,5 +16,5 @@
     "watch": false
   },
   "include": ["src/**/*", "types"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "__tests__"]
 }

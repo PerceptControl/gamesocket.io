@@ -7,6 +7,7 @@ import { Behavior } from './Behavior/Behavior.js'
 import { EventManager } from './EventManager/EventManager.js'
 import { Namespace } from './Namespace/Namespace.js'
 import { ServerProxy } from './ServerProxy/ServerProxy.js'
+import logger from './Logger/Logger.js'
 
 const sockets: Map<socketID, WebSocket> = new Map()
 const spaces: Map<string, Namespace> = new Map()
@@ -18,6 +19,7 @@ function of(name: string): Namespace {
   let space: Namespace
   if (name.startsWith('/')) name = name.split('/')[1]
   if (!spaces.has(name)) {
+    if (logger.flags.debug) logger.debug(`Created namespace "${name}"`)
     let manager = new EventManager(name)
     space = new Namespace(name, manager)
 
@@ -30,7 +32,7 @@ function of(name: string): Namespace {
 }
 
 function listen(port: number, callback: (ls: us_listen_socket) => void) {
-  for (let [name, space] of spaces) {
+  for (let name of spaces.keys()) {
     let events = managers.get(name) as EventManager
     ServerProxy.app.ws(`/${name}`, new Behavior(events))
   }
@@ -50,5 +52,6 @@ export default function (options?: AppOptions) {
     sockets: sockets,
     of: of,
     listen: listen,
+    logger: logger,
   }
 }

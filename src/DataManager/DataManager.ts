@@ -3,6 +3,7 @@ import type { escortID, eventName } from '../types'
 
 import { v4 as uuid } from 'uuid'
 import { DataEscort } from './DataEscort/DataEscort.js'
+import logger from '../Logger/Logger.js'
 
 export class DataManager implements IDataManager {
   private static _escorts: Map<escortID, IDataEscort> = new Map()
@@ -13,6 +14,7 @@ export class DataManager implements IDataManager {
     let escort = new DataEscort(newID, event, data)
     this._escorts.set(newID, escort)
 
+    if (logger.flags.trace) logger.trace(`Spawned escort with id "${newID}"\n\tInner data is: ${JSON.stringify(data)}`)
     return escort
   }
 

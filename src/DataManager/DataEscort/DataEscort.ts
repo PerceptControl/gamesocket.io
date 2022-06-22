@@ -1,6 +1,7 @@
 import type { dataObject, finalData, IDataEscort } from '../../types/DataManager'
 import type { escortID, eventName } from '../../types'
 import { PacketData } from './PacketData.js'
+import logger from '../../Logger/Logger.js'
 
 export class DataEscort implements IDataEscort {
   private _data: PacketData | undefined
@@ -37,6 +38,7 @@ export class DataEscort implements IDataEscort {
   private getPropertyByPath(propertyName: string) {
     if (!this.used) return undefined
     let tempData: finalData | dataObject = this.used as dataObject
+    if (logger.flags.debug) logger.debug(`escort#${this._id}: find property ${propertyName} in ${tempData}`)
 
     if (!this.isPrimitive) {
       if (propertyName in tempData) return tempData[propertyName]
@@ -44,7 +46,7 @@ export class DataEscort implements IDataEscort {
       let propertyPath = this.getPropertyPath(propertyName)
       if (propertyPath) {
         let changeFlag = false
-        for (let part of propertyPath) {
+        for (let part of propertyPath.values()) {
           if (typeof tempData == 'object') {
             if (part in tempData) {
               tempData = tempData[part]

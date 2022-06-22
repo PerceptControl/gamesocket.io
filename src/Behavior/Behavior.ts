@@ -1,73 +1,94 @@
 import type { WebSocket, WebSocketBehavior } from 'uWebSockets.js'
-import type { IDataEscort } from '../types/DataManager.js'
+import type { IDataEscort } from '../types/DataManager'
+import type { EventManager } from '../EventManager/EventManager'
 
 import { StringDecoder } from 'string_decoder'
-import { v4 as uuid } from 'uuid'
-import { EventManager } from '../EventManager/EventManager.js'
+import { v4 as uuid, validate as isUUID } from 'uuid'
 import { DataManager } from '../DataManager/DataManager.js'
 import { ServerProxy } from '../ServerProxy/ServerProxy.js'
+import logger from '../Logger/Logger.js'
 
 export class Behavior implements WebSocketBehavior {
-  private static _decoder = new StringDecoder('utf8')
   constructor(private _manager: EventManager) {}
 
   public get open() {
     return async function (this: EventManager, socket: WebSocket) {
-      if (typeof socket.id != 'string') socket.id = uuid()
-
+      if (isNot(socket.id, 'uuid')) socket.id = uuid()
       ServerProxy.pool.set(socket.id, socket)
+      socket.subscribe(`${this.namespace}/broadcast`)
 
-      let open = this.get('open')
-      if (open) {
+      if (logger.flags.info) logger.info(`${this.namespace}: open connection with socket#${socket.id}`)
+
+      const openHandler = this.get('open')
+      if (openHandler) {
         let escort = DataManager.spawn('open', { namespace: this.namespace, id: socket.id })
-        open!.execute(escort)
+        await openHandler.execute(escort)
         DataManager.drop(escort)
-      } else {
-        console.log(`${this.namespace}: open connection with socket#${socket.id}`)
       }
     }.bind(this._manager)
   }
 
   public get close() {
-    return async function (this: EventManager, socket: WebSocket, code: number, message: ArrayBuffer) {
+    return async function (this: EventManager, socket: WebSocket, code: number, message: unknown) {
       ServerProxy.pool.delete(socket.id)
 
-      if (this.get('close')) {
-        let escort = DataManager.spawn('close', {
+      if (logger.flags.info) logger.info(`${this.namespace}: close connection with socket#${socket.id}`)
+
+      const closeHandler = this.get('close')
+      if (closeHandler) {
+        const data = {
           namespace: this.namespace,
           id: socket.id,
           code: code,
-          message: await Behavior.decode(message),
-        })
-        this.get('close')!.execute(escort)
+          message: await decode(message),
+        }
+
+        let escort = DataManager.spawn('close', data)
+
+        await closeHandler.execute(escort)
+
         DataManager.drop(escort)
-      } else {
-        console.log(`${this.namespace}: close connection with socket#${socket.id}`)
       }
     }.bind(this._manager)
   }
 
   public get message() {
-    return async function (this: EventManager, socket: WebSocket, message: ArrayBuffer, isBinary: boolean) {
-      const parsedData = await Behavior.decode(message)
-      const undefinedData = this.get('undefined data')
-      const undefinedEvent = this.get('undefined event')
+    return async function (this: EventManager, socket: WebSocket, message: unknown, isBinary?: boolean) {
+      if (logger.flags.info) logger.info(`${this.namespace}: execute message event with socket#${socket.id}`)
 
+      const parsedData = await decode(message)
       let dataEscort: IDataEscort
 
-      if (typeof parsedData == 'string') {
-        dataEscort = DataManager.spawn('undefined data', { data: parsedData, id: socket.id })
-        undefinedData?.execute(dataEscort)
-      } else {
-        if (parsedData.event) {
-          dataEscort = DataManager.spawn(parsedData.event, { data: parsedData, id: socket.id })
-          let eventEscort = this.get(parsedData.event)
+      if (isNot(parsedData, 'object')) {
+        if (logger.flags.warn) logger.warn(`Got undefined data:${parsedData} from socket#${socket.id}`)
 
-          if (!eventEscort) undefinedEvent?.execute(dataEscort)
-          else eventEscort.execute(dataEscort)
+        const undefinedDataHandler = this.get('undefined data')
+        if (undefinedDataHandler) {
+          dataEscort = DataManager.spawn('undefined data', { data: parsedData, id: socket.id })
+
+          await undefinedDataHandler.execute(dataEscort)
+        }
+      } else {
+        if (contains(parsedData, 'event')) {
+          dataEscort = DataManager.spawn(parsedData.event, { data: parsedData, id: socket.id })
+          const eventHandler = this.get(parsedData.event)
+
+          if (eventHandler) await eventHandler.execute(dataEscort)
+          else {
+            const undefinedEventHandler = this.get('undefined event')
+
+            if (logger.flags.warn) logger.warn(`Got undefined event ${parsedData.event} from socket#${socket.id}`)
+
+            if (undefinedEventHandler) await undefinedEventHandler.execute(dataEscort)
+          }
         } else {
           dataEscort = DataManager.spawn('unknown structure', { data: parsedData, id: socket.id })
-          undefinedEvent?.execute(dataEscort)
+          const undefinedEventHandler = this.get('undefined event')
+
+          if (logger.flags.warn)
+            logger.warn(`Got undefined data object from socket#${socket.id}: ${JSON.stringify(parsedData)}`)
+
+          if (undefinedEventHandler) await undefinedEventHandler.execute(dataEscort)
         }
 
         DataManager.drop(dataEscort)
@@ -75,20 +96,52 @@ export class Behavior implements WebSocketBehavior {
     }.bind(this._manager)
   }
 
-  public static async decode(message: unknown) {
-    if (!(message instanceof ArrayBuffer)) throw Error('Socket message must be ArrayBuffer')
-    else {
-      let data = await this.fromBuffer(message)
-      try {
-        let parsedData = JSON.parse(data)
-        return parsedData
-      } catch (E) {
-        return data
-      }
+  public get drain() {
+    return async function (this: EventManager, socket: WebSocket) {
+      if (logger.flags.debug) logger.debug(`Executing drain event`)
+
+      const drainHandler = this.get('drain')
+      if (drainHandler) drainHandler.execute(DataManager.spawn('drain', { socket: socket }))
+    }.bind(this._manager)
+  }
+}
+
+const decoder = new StringDecoder('utf8')
+
+async function decode(message: unknown) {
+  if (!(message instanceof ArrayBuffer)) logger.fatal('Socket message must be ArrayBuffer')
+  else {
+    let data = await fromBuffer(message)
+    try {
+      let parsedData = JSON.parse(data)
+      return parsedData
+    } catch (E) {
+      return data
     }
   }
+}
 
-  private static async fromBuffer(message: ArrayBuffer) {
-    return Behavior._decoder.write(Buffer.from(message))
+async function fromBuffer(message: ArrayBuffer) {
+  return decoder.write(Buffer.from(message))
+}
+
+function is(entity: unknown, type: string) {
+  switch (type) {
+    case 'uuid': {
+      if (typeof entity != 'string') return false
+      return isUUID(entity)
+    }
+    case 'object': {
+      if (typeof entity == 'string') return false
+      else return true
+    }
   }
+}
+
+function isNot(entity: unknown, type: string) {
+  return !is(entity, type)
+}
+
+function contains(object: Object, param: string) {
+  return param in object
 }

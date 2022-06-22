@@ -1,25 +1,29 @@
 import type { escortID, eventName, Handler, IEscort, IManager } from '../types'
-import type { IDataEscort } from '../types/DataManager'
+import type { IDataEscort } from '../types/DataManager.js'
 
+import logger from '../Logger/Logger.js'
 export declare type EventHandler = Handler<IDataEscort>
 
 export class EventManager implements IManager<EventEscort> {
   private _escorts: Map<eventName, EventEscort> = new Map()
   constructor(public namespace: string) {}
   spawn(event: string, callback?: EventHandler): EventEscort {
-    let escort = new EventEscort('', event, callback)
+    if (logger.flags.debug)
+      logger.debug(`${this.namespace}(EventManager): spawning handler escort "${event}". \nCallback is ${callback}`)
+    let escort = new EventEscort('_', event, callback)
     this._escorts.set(event, escort)
 
     return escort
   }
 
-  get(event: string): EventEscort | undefined {
-    return this._escorts.get(event)
+  get(entity: string | EventEscort): EventEscort | undefined {
+    if (typeof entity == 'string') return this._escorts.get(entity)
+    else return this._escorts.get(entity.event)
   }
 
   drop(entity: string | EventEscort) {
     if (typeof entity == 'string') return this._escorts.delete(entity)
-    else return this._escorts.delete(entity.id)
+    else return this._escorts.delete(entity.event)
   }
 
   get pool() {
@@ -32,7 +36,7 @@ export class EventEscort implements IEscort<EventHandler> {
   constructor(private _id: escortID, private _event: eventName, callback?: EventHandler) {
     if (!callback)
       this._handler = function (this: { name: string; id: string }, escort: IDataEscort) {
-        throw Error(`Unsetted function on event ${this.name}`)
+        logger.fatal(`Unsetted function on event '${this.name}'`)
       }.bind({ id: this._id, name: this._event })
     else this._handler = callback.bind({ id: this._id, name: this._event })
   }

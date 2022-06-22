@@ -1,6 +1,6 @@
-import { DataEscort } from "../DataManager/DataEscort/DataEscort";
-import { DataManager } from "../DataManager/DataManager"
-import { dataObject } from "../types/DataManager";
+import { DataEscort } from "../DataManager/DataEscort/DataEscort.js";
+import { DataManager } from "../DataManager/DataManager.js"
+import { dataObject } from "../types/DataManager.js";
 
 const testObject = {
   object: {
@@ -38,6 +38,11 @@ describe('Data Manager', () => {
     let escort = DataManager.spawn('testEvent')
 
     expect(DataManager.drop(escort.id)).toBeTruthy()
+    expect(DataManager.drop('randomID')).toBeFalsy()
+
+    escort = DataManager.spawn('testEvent')
+
+    expect(DataManager.drop(escort)).toBeTruthy()
     expect(DataManager.drop('randomID')).toBeFalsy()
   })
 })

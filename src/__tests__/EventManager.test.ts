@@ -1,6 +1,5 @@
-import { DataEscort } from "../DataManager/DataEscort/DataEscort";
-import { EventEscort, EventManager } from "../EventManager/EventManager";
-import { IDataEscort } from "../types/DataManager";
+import { DataEscort } from "../DataManager/DataEscort/DataEscort.js";
+import { EventEscort, EventManager } from "../EventManager/EventManager.js";
 
 
 describe('Event Escort', () => {
@@ -23,7 +22,7 @@ describe('Event Escort', () => {
 
   test('Undefined event', () => {
     const test = new EventEscort('testID', 'testName')
-    expect(() => {test.execute(new DataEscort('testID', 'testName'))}).toThrowError('Unsetted function on event testName')
+    expect(() => {test.execute(new DataEscort('testID', 'testName'))}).toThrowError("Unsetted function on event 'testName'")
   })
 })
 
@@ -34,18 +33,22 @@ describe('Event Manager', () => {
   test('create instance', () => {
     expect(manager.spawn('testEvent')).toBeInstanceOf(EventEscort)
     expect(manager.spawn('testEvent', myMock)).toBeInstanceOf(EventEscort)
+
+    manager = new EventManager('test')
+    manager.spawn('test')
+    expect(manager.pool).toBeInstanceOf(Map) 
   })
 
   test('find escort', () => {
     let escort = manager.spawn('testEvent')
 
-    expect(manager.get(escort.id)).toEqual(escort)
+    expect(manager.get(escort)).toEqual(escort)
   })
 
   test('delete escort', () => {
     let escort = manager.spawn('testEvent')
 
-    expect(manager.drop(escort.id)).toBeTruthy()
+    expect(manager.drop(escort)).toBeTruthy()
     expect(manager.drop('randomID')).toBeFalsy()
   })
 })

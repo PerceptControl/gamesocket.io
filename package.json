@@ -29,7 +29,7 @@
     "url": "git://github.com/PerceptControl/gamesocket.io"
   },
   "scripts": {
-    "test": "jest",
+    "test": "npx jest",
     "build": "tsc ; npx prettier --config ./.prettierrc.json -w ./",
     "prepublishOnly": "npm test",
     "prepare": "npm run build",

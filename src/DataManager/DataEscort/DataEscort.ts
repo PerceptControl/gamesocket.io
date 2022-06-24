@@ -1,12 +1,11 @@
 import type { dataObject, finalData, IDataEscort } from '../../types/DataManager'
 import type { escortID, eventName } from '../../types'
-import { PacketData } from './PacketData.js'
 import logger from '../../Logger/Logger.js'
 
 export class DataEscort implements IDataEscort {
-  private _data: PacketData | undefined
+  private _data: finalData | undefined
   constructor(private _id: escortID, private _event: eventName, data?: finalData) {
-    if (data) this._data = new PacketData(data)
+    if (data != null) this._data = data
   }
 
   public get(property?: string) {
@@ -24,7 +23,7 @@ export class DataEscort implements IDataEscort {
   }
 
   public get used() {
-    return this._data?.used
+    return this._data
   }
 
   public get isPrimitive() {

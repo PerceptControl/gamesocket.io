@@ -17,7 +17,10 @@ export class ServerProxy {
   static send(id: socketID, event: eventName, ...data: finalData[]): void {
     if (logger.flags.debug)
       logger.debug(`\t Trying to send as socket#${id} event ${event}. \n\tData: ${JSON.stringify(data)}`)
-    this.get(id)?.send(JSON.stringify({ event: event, used: data }), true, true)
+
+    const socket = this.get(id)
+    if (socket) socket.send(JSON.stringify({ event: event, used: data }), true, true)
+    else if (logger.flags.warn) logger.warn(`Called socket#${id} doesn't exist. Got event: '${event}'`)
   }
 
   static get(id: socketID) {

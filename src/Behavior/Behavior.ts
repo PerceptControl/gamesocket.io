@@ -2,7 +2,6 @@ import type { WebSocket, WebSocketBehavior } from 'uWebSockets.js'
 import type { IDataEscort } from '../types/DataManager'
 import type { EventManager } from '../EventManager/EventManager'
 
-import { StringDecoder } from 'string_decoder'
 import { v4 as uuid, validate as isUUID } from 'uuid'
 import { DataManager } from '../DataManager/DataManager.js'
 import { ServerProxy } from '../ServerProxy/ServerProxy.js'
@@ -29,7 +28,7 @@ export class Behavior implements WebSocketBehavior {
   }
 
   public get close() {
-    return async function (this: EventManager, socket: WebSocket, code: number, message: unknown) {
+    return async function (this: EventManager, socket: WebSocket, code: number, message: ArrayBuffer) {
       ServerProxy.pool.delete(socket.id)
 
       if (logger.flags.info) logger.info(`${this.namespace}: close connection with socket#${socket.id}`)
@@ -40,7 +39,7 @@ export class Behavior implements WebSocketBehavior {
           namespace: this.namespace,
           id: socket.id,
           code: code,
-          message: await decode(message),
+          message: DataManager.decode(message),
         }
 
         let escort = DataManager.spawn('close', data)
@@ -53,10 +52,10 @@ export class Behavior implements WebSocketBehavior {
   }
 
   public get message() {
-    return async function (this: EventManager, socket: WebSocket, message: unknown, isBinary?: boolean) {
-      if (logger.flags.info) logger.info(`${this.namespace}: execute message event with socket#${socket.id}`)
+    return async function (this: EventManager, socket: WebSocket, message: ArrayBuffer, isBinary?: boolean) {
+      if (logger.flags.info) logger.info(`${this.namespace}: execute 'message' event with socket#${socket.id}`)
 
-      const parsedData = await decode(message)
+      const parsedData = DataManager.decode(message)
       let dataEscort: IDataEscort
 
       if (isNot(parsedData, 'object')) {
@@ -77,7 +76,7 @@ export class Behavior implements WebSocketBehavior {
           else {
             const undefinedEventHandler = this.get('undefined event')
 
-            if (logger.flags.warn) logger.warn(`Got undefined event ${parsedData.event} from socket#${socket.id}`)
+            if (logger.flags.warn) logger.warn(`Got undefined event '${parsedData.event}' from socket#${socket.id}`)
 
             if (undefinedEventHandler) await undefinedEventHandler.execute(dataEscort)
           }
@@ -98,31 +97,12 @@ export class Behavior implements WebSocketBehavior {
 
   public get drain() {
     return async function (this: EventManager, socket: WebSocket) {
-      if (logger.flags.debug) logger.debug(`Executing drain event`)
+      if (logger.flags.debug) logger.debug(`Executing 'drain' event`)
 
       const drainHandler = this.get('drain')
       if (drainHandler) drainHandler.execute(DataManager.spawn('drain', { socket: socket }))
     }.bind(this._manager)
   }
-}
-
-const decoder = new StringDecoder('utf8')
-
-async function decode(message: unknown) {
-  if (!(message instanceof ArrayBuffer)) logger.fatal('Socket message must be ArrayBuffer')
-  else {
-    let data = await fromBuffer(message)
-    try {
-      let parsedData = JSON.parse(data)
-      return parsedData
-    } catch (E) {
-      return data
-    }
-  }
-}
-
-async function fromBuffer(message: ArrayBuffer) {
-  return decoder.write(Buffer.from(message))
 }
 
 function is(entity: unknown, type: string) {

@@ -3,7 +3,9 @@ import type { escortID, eventName } from '../types'
 
 import { v4 as uuid } from 'uuid'
 import { DataEscort } from './DataEscort/DataEscort.js'
+import { StringDecoder } from 'node:string_decoder'
 import logger from '../Logger/Logger.js'
+const decoder = new StringDecoder('utf8')
 
 export class DataManager implements IDataManager {
   private static _escorts: Map<escortID, IDataEscort> = new Map()
@@ -29,5 +31,18 @@ export class DataManager implements IDataManager {
 
   private static createID() {
     return uuid()
+  }
+
+  public static decode(buffer: ArrayBuffer) {
+    if (!(buffer instanceof ArrayBuffer)) logger.fatal('Socket message must be ArrayBuffer')
+    else {
+      let data = decoder.write(Buffer.from(buffer))
+      try {
+        let jsonData = JSON.parse(data)
+        return jsonData
+      } catch (E) {
+        return data
+      }
+    }
   }
 }

@@ -2,10 +2,6 @@ import io from '../lib/io.js'
 
 let Server = io()
 
-const logger = Server.logger
-logger.flags.debug = true
-logger.flags.info = true
-
 var main = Server.of('main')
 main.on('open', (escort) => {})
 

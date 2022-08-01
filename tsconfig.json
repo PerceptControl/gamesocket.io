@@ -16,7 +16,7 @@
     "strict": true /* Enable all strict type-checking options. */,
     "watch": false,
   },
-  "include": ["src/**/*", "types"],
+  "include": ["src/**/*", "types", "examples/test.js"],
   "exclude": [
     "node_modules", 
     "src/**/*.spec.ts",

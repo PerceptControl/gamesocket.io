@@ -7,6 +7,7 @@ import { Behavior } from './Behavior/Behavior.js'
 import { EventManager } from './EventManager/EventManager.js'
 import { Namespace } from './Namespace/Namespace.js'
 import { ServerProxy } from './ServerProxy/ServerProxy.js'
+import { AliasPool } from './AliasPool/AliasPool'
 import logger from './Logger/Logger.js'
 
 const sockets: Map<socketID, WebSocket> = new Map()
@@ -52,6 +53,7 @@ export default function (options?: AppOptions) {
     sockets: sockets,
     of: of,
     listen: listen,
+    aliases: new AliasPool(),
     logger: logger,
   }
 }

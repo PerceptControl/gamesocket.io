@@ -1,5 +1,5 @@
-import type { dataObject, finalData, IDataEscort } from '../../types/DataManager'
-import type { escortID, eventName } from '../../types'
+import type { dataObject, finalData, IDataEscort } from '../DataManager'
+import type { escortID, eventName } from '../../io'
 import logger from '../../Logger/Logger.js'
 
 export class DataEscort implements IDataEscort {

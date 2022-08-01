@@ -1,8 +1,8 @@
-import { ServerProxy } from "../ServerProxy/ServerProxy.js";
+import { ServerProxy } from "../ServerProxy/ServerProxy";
 import { WebSocket } from "uWebSockets.js";
-import { Behavior } from "../Behavior/Behavior.js";
-import { EventManager } from "../EventManager/EventManager.js";
-import { Namespace } from "../Namespace/Namespace.js";
+import { Behavior } from "../Behavior/Behavior";
+import { EventManager } from "../EventManager/EventManager";
+import { Namespace } from "../Namespace/Namespace";
 const stb = require('string-to-arraybuffer')
 
 jest.mock("../ServerProxy/ServerProxy")

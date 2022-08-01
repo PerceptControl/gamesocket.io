@@ -1,4 +1,4 @@
-import { socketID } from '../types'
+import { socketID } from '../io'
 
 export declare abstract class IAliasPool {
   static set(socketAlias: string, id: socketID): void

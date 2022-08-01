@@ -1,6 +1,6 @@
 import type { TemplatedApp, WebSocket } from 'uWebSockets.js'
-import type { eventName, roomName, socketID } from '../types'
-import type { finalData } from '../types/DataManager'
+import type { eventName, roomName, socketID } from '../io'
+import type { finalData } from '../DataManager/DataManager'
 
 import logger from '../Logger/Logger.js'
 

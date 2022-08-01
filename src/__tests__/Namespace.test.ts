@@ -1,8 +1,8 @@
 import { v4 as uuid } from "uuid";
-import { ServerProxy } from "../ServerProxy/ServerProxy.js";
-import { DataManager } from "../DataManager/DataManager.js";
-import { EventManager } from "../EventManager/EventManager.js";
-import { Namespace } from "../Namespace/Namespace.js";
+import { ServerProxy } from "../ServerProxy/ServerProxy";
+import { DataManager } from "../DataManager/DataManager";
+import { EventManager } from "../EventManager/EventManager";
+import { Namespace } from "../Namespace/Namespace";
 
 jest.mock("../ServerProxy/ServerProxy")
 

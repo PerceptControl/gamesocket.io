@@ -1,9 +1,9 @@
-import type { eventName } from '../types'
-import type { destination, IDestination } from '../types/DestinationController'
-import type { finalData } from '../types/DataManager.js'
+import type { eventName } from '../io'
+import type { destination, IDestination } from '../DestinationConrtoller/DestinationConrtoller'
+import type { finalData } from '../DataManager/DataManager'
 
-import { EventHandler, EventManager } from '../EventManager/EventManager.js'
-import DestinationConrtoller from '../DestinationConrtoller/DestinationConrtoller.js'
+import { EventHandler, EventManager } from '../EventManager/EventManager'
+import DestinationConrtoller from '../DestinationConrtoller/DestinationConrtoller'
 import logger from '../Logger/Logger.js'
 
 export declare interface INamespace {

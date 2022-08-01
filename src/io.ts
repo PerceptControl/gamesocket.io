@@ -1,6 +1,5 @@
 import type { us_listen_socket, WebSocket } from 'uWebSockets.js'
 import type { AppOptions } from 'uWebSockets.js'
-import type { socketID } from './types'
 
 import uWS from 'uWebSockets.js'
 import { Behavior } from './Behavior/Behavior.js'
@@ -9,6 +8,27 @@ import { Namespace } from './Namespace/Namespace.js'
 import { ServerProxy } from './ServerProxy/ServerProxy.js'
 import { AliasPool } from './AliasPool/AliasPool'
 import logger from './Logger/Logger.js'
+
+export declare type Handler<T> = (this: { id: escortID; name: eventName }, innerData: T) => void | Promise<void>
+
+export declare type escortID = string
+export declare type socketID = `$^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`
+
+export declare type eventName = string
+export declare type roomName = string
+
+export declare interface IEscort<T> {
+  get event(): eventName
+  get id(): escortID
+  get used(): T | undefined
+}
+
+export declare interface IManager<Escort> {
+  spawn(event: eventName): Escort
+  get(id: escortID): Escort | undefined
+  drop(id: escortID): boolean
+  drop(escort: Escort): boolean
+}
 
 const sockets: Map<socketID, WebSocket> = new Map()
 const spaces: Map<string, Namespace> = new Map()

@@ -1,5 +1,20 @@
-import type { finalData, IDataEscort, IDataManager } from '../types/DataManager'
-import type { escortID, eventName } from '../types'
+import { escortID, eventName, IEscort, IManager } from '../io'
+
+export declare type finalData = string | number | boolean | dataObject
+
+export declare type dataObject = { [key: string]: finalData }
+
+export declare interface IDataEscort extends IEscort<finalData> {
+  get(property: string): finalData | undefined
+  get isPrimitive(): boolean
+}
+
+export declare abstract class IDataManager {
+  static spawn(event: eventName, data?: finalData): IDataEscort
+  static get(id: escortID): IDataEscort | undefined
+  static drop(id: escortID): boolean
+  static drop(escort: IDataEscort): boolean
+}
 
 import { v4 as uuid } from 'uuid'
 import { DataEscort } from './DataEscort/DataEscort.js'

@@ -1,13 +1,22 @@
-import type { IDestination, IDestinationController } from '../types/DestinationController'
-import type { roomName, socketID } from '../types'
-import type { finalData } from '../types/DataManager'
-
 import { validate } from 'uuid'
 import { ServerProxy } from '../ServerProxy/ServerProxy.js'
 import logger from '../Logger/Logger.js'
 
+import type { eventName, roomName, socketID } from '../io'
+import type { finalData } from '../DataManager/DataManager'
+
+export declare type IDestinationController = (...destinations: Array<destination>) => IDestination
+
+export declare interface IDestination {
+  emit(event: eventName, data: finalData | Array<finalData>): void
+  join(destination: destination | Array<destination>): void
+  leave(destination: destination | Array<destination>): void
+}
+
+export declare type destination = socketID | roomName
+
 const controller: IDestinationController = function (namespace: string, ...destinations) {
-  if (validate(destinations[0])) return new SocketDestination(namespace, destinations)
+  if (validate(destinations[0])) return new SocketDestination(namespace, destinations as unknown as socketID[])
   else return new RoomDestination(namespace, destinations)
 }
 
@@ -17,25 +26,25 @@ class SocketDestination implements IDestination {
   }
 
   emit(event: string, ...data: finalData[]): void {
-    for (let id in this._sockets) ServerProxy.send(id, event, ...data)
+    for (let id of this._sockets.values()) ServerProxy.send(id, event, ...data)
   }
 
   join(rooms: string | string[]): void {
     if (typeof rooms != 'string') {
-      for (let id in this._sockets) {
+      for (let id of this._sockets.values()) {
         rooms.forEach((room, index) => (rooms[index] = getCorrectPath(room, this._name)))
-        for (let room in rooms) ServerProxy.subscribe(id, room)
+        for (let room of rooms) ServerProxy.subscribe(id, room)
       }
-    } else for (let id in this._sockets) ServerProxy.subscribe(id, rooms)
+    } else for (let id of this._sockets.values()) ServerProxy.subscribe(id, rooms)
   }
 
   leave(rooms: string | string[]): void {
     if (typeof rooms != 'string') {
-      for (let id in this._sockets) {
+      for (let id of this._sockets.values()) {
         rooms.forEach((room, index) => (rooms[index] = getCorrectPath(room, this._name)))
         for (let room in rooms) ServerProxy.unsubscribe(id, room)
       }
-    } else for (let id in this._sockets) ServerProxy.unsubscribe(id, rooms)
+    } else for (let id of this._sockets.values()) ServerProxy.unsubscribe(id, rooms)
   }
 }
 
@@ -50,18 +59,18 @@ class RoomDestination implements IDestination {
     for (let room in this._rooms) ServerProxy.emit(room, event, ...data)
   }
 
-  join(socket: string | string[]): void {
+  join(socket: socketID | socketID[]): void {
     if (typeof socket != 'string') {
       for (let room in this._rooms) {
-        for (let id in socket) ServerProxy.subscribe(id, room)
+        for (let id of socket) ServerProxy.subscribe(id, room)
       }
-    } else for (let room in this._rooms) ServerProxy.subscribe(socket, room)
+    } else for (let room of this._rooms) ServerProxy.subscribe(socket, room)
   }
 
-  leave(socket: string | string[]): void {
+  leave(socket: socketID | socketID[]): void {
     if (typeof socket != 'string') {
       for (let room in this._rooms) {
-        for (let id in socket) ServerProxy.unsubscribe(id, room)
+        for (let id of socket) ServerProxy.unsubscribe(id, room)
       }
     } else for (let room in this._rooms) ServerProxy.unsubscribe(socket, room)
   }

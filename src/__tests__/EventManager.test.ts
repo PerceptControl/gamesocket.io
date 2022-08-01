@@ -1,5 +1,5 @@
-import { DataEscort } from "../DataManager/DataEscort/DataEscort.js";
-import { EventEscort, EventManager } from "../EventManager/EventManager.js";
+import { DataEscort } from "../DataManager/DataEscort/DataEscort";
+import { EventEscort, EventManager } from "../EventManager/EventManager";
 
 
 describe('Event Escort', () => {

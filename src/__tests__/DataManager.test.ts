@@ -1,6 +1,6 @@
-import { DataEscort } from "../DataManager/DataEscort/DataEscort.js";
-import { DataManager } from "../DataManager/DataManager.js"
-import { dataObject } from "../types/DataManager.js";
+import { DataEscort } from "../DataManager/DataEscort/DataEscort";
+import { DataManager } from "../DataManager/DataManager"
+import { dataObject } from "../DataManager/DataManager";
 
 const testObject = {
   object: {

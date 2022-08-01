@@ -18,7 +18,7 @@
     "tcp"
   ],
   "type": "module",
-  "main": "./lib/Server.js",
+  "main": "./lib/io.js",
   "types": "./src/index.d.ts",
   "dependencies": {
     "uuid": "^8.3.2",

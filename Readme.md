@@ -16,14 +16,14 @@ a socket ID by given name
 
 /* initialization code... */
 
-import { SocketPool } from 'gamesocket.io'
+app = io()
 
 var socketAlias = ...
 var socketId = ...
 
-SocketPool.Aliases.set(socketId, socketAlias)
-SocketPool.Aliases.swap(socketAlias, 'someNewAlias')
-SocketPool.Aliases.getId('someNewAlias')
+app.aliases.set(socketId, socketAlias)
+ap.aliases.swap(socketAlias, 'someNewAlias')
+app.aliases.getId('someNewAlias')
 ```
 
 #### Namespace support
@@ -36,10 +36,10 @@ You can use many namespaces depending on your needs.
 import { Server } from 'gamesocket.io'
 
 //emit to custom room in test namespace
-Server.namespace('test').control('room').emit('someEvent')
+Server.of('test').control('room').emit('someEvent')
 
 //emit to custom socket in admin namespace
-Server.namespace('admin').control(socketId).emit('someEvent')
+Server.of('admin').control(socketId).emit('someEvent')
 ```
 
 #### Adaptive destination controller
@@ -49,10 +49,8 @@ You can use rooms and sockets in much ways.
 ```js
 //js
 
-import { Server } from 'gamesocket.io'
-
 //create test namespace
-var test = Server.namespace('test')
+var test = app.namespace('test')
 
 //Sockets with ids 1, 2 join rooms 1, 2
 test.control(['room1', 'room2']).join([id1, id2])
@@ -79,13 +77,9 @@ All packets shall have same structure:
 
 ```typescript
 //typescript
-interface PacketStructure {
-  meta: {
-    [key: string | number]: any
-  }
-  data: {
-    [key: string | number]: any
-  }
+export declare interface IDataEscort extends IEscort<finalData> {
+  get(property: string): finalData | undefined
+  get isPrimitive(): boolean
 }
 ```
 
@@ -100,8 +94,11 @@ For example:
 /*
   * Suppose packet was
   * {
-  *   meta: { event: login }
-  *   data: { login: 'anAwesomeName', password: 'hardPassword' }
+  *   event: login
+  *   data: {
+  *     login: 'anAwesomeName',
+  *     password: 'hardPassword'
+  *   }
   * }
 */
 
@@ -132,12 +129,19 @@ The following example creates gamesocket.io websocket server which listening on
 port 3000.
 
 ```js
-import { Server, SocketPool } from 'gamesocket.io'
+import io from 'gamesocket.io'
 
-var main = Server.namespace('main')
-main.on('someEvent', (socketId, manager) => {
-  console.log(manager.get('meta/event') == 'someEvent')
-  var alias = manager.get('data/alias')
+var app = io()
+var main = io.of('main')
+main.on('someEvent', (escort) => {
+  /**
+   * {
+   *   event: 'someEvent',
+   *   alias: 'test'
+   * }
+  */
+  console.log(escort.event == 'someEvent')
+  var alias = manager.get('alias')
 
   SocketPool.Aliases.set(socketId, alias)
 })
@@ -155,10 +159,9 @@ In the near future the package will be overgrown with tests and optimized
 
 And soon I probbably add next features:
 
-1. **@types for package**
-2. **Custom packet structure configuration**
-3. **uWebSocket websocket configuration support**
-4. **Node.js worker support**
+1. ~~**Custom packet structure configuration**~~
+2. ~~**uWebSocket websocket configuration support**~~
+3. **Node.js worker support**
 
 And more...
 

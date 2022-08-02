@@ -1,13 +1,9 @@
-import { escortID, eventName, IEscort, IManager } from '../io'
+import type { IDataEscort } from './DataEscort/DataEscort.js'
+import type { escortID, eventName } from '../io'
 
 export declare type finalData = string | number | boolean | dataObject
 
 export declare type dataObject = { [key: string]: finalData }
-
-export declare interface IDataEscort extends IEscort<finalData> {
-  get(property: string): finalData | undefined
-  get isPrimitive(): boolean
-}
 
 export declare abstract class IDataManager {
   static spawn(event: eventName, data?: finalData): IDataEscort

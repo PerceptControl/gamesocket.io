@@ -1,6 +1,12 @@
-import type { dataObject, finalData, IDataEscort } from '../DataManager'
+import type { dataObject, finalData } from '../DataManager'
 import type { escortID, eventName } from '../../io'
+import type { IEscort } from '../../io'
 import logger from '../../Logger/Logger.js'
+
+export declare interface IDataEscort extends IEscort<finalData> {
+  get(property: string): finalData | undefined
+  get isPrimitive(): boolean
+}
 
 export class DataEscort implements IDataEscort {
   private _data: finalData | undefined

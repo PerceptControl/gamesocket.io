@@ -1,5 +1,5 @@
 import type { escortID, eventName, Handler, IEscort, IManager } from '../io'
-import type { IDataEscort } from '../DataManager/DataManager'
+import type { IDataEscort } from '../DataManager/DataEscort/DataEscort'
 
 import logger from '../Logger/Logger.js'
 export declare type EventHandler = Handler<IDataEscort>

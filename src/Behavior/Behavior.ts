@@ -63,13 +63,13 @@ export class Behavior implements WebSocketBehavior {
 
         const undefinedDataHandler = this.get('undefined data')
         if (undefinedDataHandler) {
-          dataEscort = DataManager.spawn('undefined data', { data: parsedData, id: socket.id })
+          dataEscort = DataManager.spawn('undefined data', { ...parsedData, id: socket.id })
 
           await undefinedDataHandler.execute(dataEscort)
         }
       } else {
         if (contains(parsedData, 'event')) {
-          dataEscort = DataManager.spawn(parsedData.event, { data: parsedData, id: socket.id })
+          dataEscort = DataManager.spawn(parsedData.event, { ...parsedData, id: socket.id })
           const eventHandler = this.get(parsedData.event)
 
           if (eventHandler) await eventHandler.execute(dataEscort)
@@ -81,7 +81,7 @@ export class Behavior implements WebSocketBehavior {
             if (undefinedEventHandler) await undefinedEventHandler.execute(dataEscort)
           }
         } else {
-          dataEscort = DataManager.spawn('unknown structure', { data: parsedData, id: socket.id })
+          dataEscort = DataManager.spawn('unknown structure', { ...parsedData, id: socket.id })
           const undefinedEventHandler = this.get('undefined event')
 
           if (logger.flags.warn)

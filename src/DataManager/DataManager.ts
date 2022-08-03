@@ -3,7 +3,7 @@ import type { escortID, eventName } from '../io'
 
 export declare type finalData = string | number | boolean | dataObject
 
-export declare type dataObject = { [key: string | number]: finalData }
+export declare type dataObject = Array<finalData> | Map<finalData, finalData> | { [key: string | number]: finalData }
 
 export declare abstract class IDataManager {
   static spawn(event: eventName, data?: finalData): IDataEscort

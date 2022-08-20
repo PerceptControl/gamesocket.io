@@ -3,7 +3,7 @@
     "target": "ES2022",
 
     /* Modules */
-    "module":  "ES6",
+    "module":  "commonjs",
     "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
     "rootDir": "./src" /* Specify the root folder within your source files. */,

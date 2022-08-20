@@ -14,6 +14,9 @@ export declare interface INamespace {
 
 export class Namespace implements INamespace {
   constructor(private _name: string, private _events: EventManager) {}
+  get name() {
+    return this._name
+  }
   control(destinations: string | string[]): IDestination {
     if (logger.flags.debug) logger.debug(`${this._name}: controlling ${destinations}`)
     if (destinations instanceof Array) {

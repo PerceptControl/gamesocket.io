@@ -6,7 +6,7 @@ import { Behavior } from './Behavior/Behavior.js'
 import { EventManager } from './EventManager/EventManager.js'
 import { Namespace } from './Namespace/Namespace.js'
 import { ServerProxy } from './ServerProxy/ServerProxy.js'
-import { AliasPool } from './AliasPool/AliasPool'
+import { AliasPool } from './AliasPool/AliasPool.js'
 import logger from './Logger/Logger.js'
 
 export declare type Handler<T> = (this: { id: escortID; name: eventName }, innerData: T) => void | Promise<void>

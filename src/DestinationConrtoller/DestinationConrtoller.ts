@@ -2,8 +2,8 @@ import { validate } from 'uuid'
 import { ServerProxy } from '../ServerProxy/ServerProxy.js'
 import logger from '../Logger/Logger.js'
 
-import type { eventName, roomName, socketID } from '../io'
-import type { finalData } from '../DataManager/DataManager'
+import type { eventName, roomName, socketID } from '../io.js'
+import type { finalData } from '../DataManager/DataManager.js'
 
 export declare type IDestinationController = (...destinations: Array<destination>) => IDestination
 

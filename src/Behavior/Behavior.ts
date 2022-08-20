@@ -1,6 +1,6 @@
 import type { WebSocket, WebSocketBehavior } from 'uWebSockets.js'
-import type { IDataEscort } from '../DataManager/DataEscort/DataEscort'
-import type { EventManager } from '../EventManager/EventManager'
+import type { IDataEscort } from '../DataManager/DataEscort/DataEscort.js'
+import type { EventManager } from '../EventManager/EventManager.js'
 
 import { v4 as uuid, validate as isUUID } from 'uuid'
 import { DataManager } from '../DataManager/DataManager.js'

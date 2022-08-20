@@ -1,5 +1,5 @@
 import type { IDataEscort } from './DataEscort/DataEscort.js'
-import type { escortID, eventName } from '../io'
+import type { escortID, eventName } from '../io.js'
 
 export declare type finalData = string | number | boolean | dataObject
 

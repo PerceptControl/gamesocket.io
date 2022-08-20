@@ -1,6 +1,6 @@
-import type { dataObject, finalData } from '../DataManager'
-import type { escortID, eventName } from '../../io'
-import type { IEscort } from '../../io'
+import type { dataObject, finalData } from '../DataManager.js'
+import type { escortID, eventName } from '../../io.js'
+import type { IEscort } from '../../io.js'
 import logger from '../../Logger/Logger.js'
 
 export declare interface IDataEscort extends IEscort<finalData> {

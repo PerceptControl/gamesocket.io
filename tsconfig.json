@@ -3,8 +3,8 @@
     "target": "ES2022",
 
     /* Modules */
-    "module":  "CommonJS",
-    "moduleResolution": "Node",
+    "module":  "ES6",
+    "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
     "rootDir": "./src" /* Specify the root folder within your source files. */,
     "esModuleInterop": true /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility. */,

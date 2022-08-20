@@ -3,7 +3,7 @@
     "target": "ES2022",
 
     /* Modules */
-    "module": "ES2022" /* Specify what module code is generated. */,
+    "module":  "CommonJS",
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true,
     "rootDir": "./src" /* Specify the root folder within your source files. */,

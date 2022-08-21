@@ -42,7 +42,7 @@ class SocketDestination implements IDestination {
     if (typeof rooms != 'string') {
       for (let id of this._sockets.values()) {
         rooms.forEach((room, index) => (rooms[index] = getCorrectPath(room, this._name)))
-        for (let room in rooms) ServerProxy.unsubscribe(id, room)
+        for (let room of rooms) ServerProxy.unsubscribe(id, room)
       }
     } else for (let id of this._sockets.values()) ServerProxy.unsubscribe(id, rooms)
   }
@@ -56,12 +56,12 @@ class RoomDestination implements IDestination {
   }
 
   emit(event: string, ...data: finalData[]): void {
-    for (let room in this._rooms) ServerProxy.emit(room, event, ...data)
+    for (let room of this._rooms) ServerProxy.emit(room, event, ...data)
   }
 
   join(socket: socketID | socketID[]): void {
     if (typeof socket != 'string') {
-      for (let room in this._rooms) {
+      for (let room of this._rooms) {
         for (let id of socket) ServerProxy.subscribe(id, room)
       }
     } else for (let room of this._rooms) ServerProxy.subscribe(socket, room)
@@ -69,10 +69,10 @@ class RoomDestination implements IDestination {
 
   leave(socket: socketID | socketID[]): void {
     if (typeof socket != 'string') {
-      for (let room in this._rooms) {
+      for (let room of this._rooms) {
         for (let id of socket) ServerProxy.unsubscribe(id, room)
       }
-    } else for (let room in this._rooms) ServerProxy.unsubscribe(socket, room)
+    } else for (let room of this._rooms) ServerProxy.unsubscribe(socket, room)
   }
 }
 

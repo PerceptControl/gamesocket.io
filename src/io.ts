@@ -77,3 +77,11 @@ export default function (options?: AppOptions) {
     logger: logger,
   }
 }
+
+export * from './Behavior/Behavior.js'
+export * from './EventManager/EventManager.js'
+export * from './Namespace/Namespace.js'
+export * from './ServerProxy/ServerProxy.js'
+export * from './AliasPool/AliasPool.js'
+export * from './DataManager/DataManager.js'
+export * from './DataManager/DataEscort/DataEscort.js'

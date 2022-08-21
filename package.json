@@ -17,7 +17,7 @@
     "io",
     "tcp"
   ],
-  "type": "module",
+  "type": "commonjs",
   "main": "./lib/io.js",
   "types": "./lib/io.d.ts",
   "dependencies": {

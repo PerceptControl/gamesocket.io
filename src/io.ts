@@ -1,5 +1,5 @@
 import type { us_listen_socket, WebSocket } from 'uWebSockets.js'
-import type { AppOptions } from 'uWebSockets.js'
+import type { AppOptions, TemplatedApp } from 'uWebSockets.js'
 
 import uWS from 'uWebSockets.js'
 import { Behavior } from './Behavior/Behavior.js'
@@ -60,7 +60,14 @@ function listen(port: number, callback: (ls: us_listen_socket) => void) {
   ServerProxy.app.listen(port, callback)
 }
 
-export default function (options?: AppOptions) {
+export default function (options?: AppOptions): {
+  app: TemplatedApp
+  sockets: Map<string, WebSocket>
+  of: typeof of
+  listen: typeof listen
+  aliases: AliasPool
+  logger: typeof logger
+} {
   if (!options) ServerProxy.app = uWS.App()
   else {
     if (options.cert_file_name && options.key_file_name) {

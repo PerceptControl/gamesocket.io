@@ -9,7 +9,7 @@ class NamespaceList extends List<Namespace> {
   }
 
   get(nmsp: string) {
-    for (let i = 0; i < super._elements.length; i++) {
+    for (let i = 0; i < super._elements?.length; i++) {
       if (super._elements[i]?.name == nmsp) return super._elements[i]
     }
 
@@ -17,7 +17,7 @@ class NamespaceList extends List<Namespace> {
   }
 
   has(nmsp: string) {
-    for (let i = 0; i < super._elements.length; i++) {
+    for (let i = 0; i < super._elements?.length; i++) {
       if (super._elements[i]?.name == nmsp) return true
     }
 

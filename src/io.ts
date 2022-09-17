@@ -8,6 +8,7 @@ import { Namespace } from './Namespace/Namespace.js'
 import { ServerProxy } from './ServerProxy/ServerProxy.js'
 import { AliasPool } from './AliasPool/AliasPool.js'
 import logger from './Logger/Logger.js'
+import { NmspManager } from './Namespace/Manager.js'
 
 export declare type Handler<T> = (this: { id: escortID; name: eventName }, innerData: T) => void | Promise<void>
 
@@ -37,19 +38,7 @@ const managers: Map<string, EventManager> = new Map()
 ServerProxy.pool = sockets
 
 function of(name: string): Namespace {
-  let space: Namespace
-  if (name.startsWith('/')) name = name.split('/')[1]
-  if (!spaces.has(name)) {
-    if (logger.flags.debug) logger.debug(`Created namespace "${name}"`)
-    let manager = new EventManager(name)
-    space = new Namespace(name, manager)
-
-    managers.set(name, manager)
-    spaces.set(name, space)
-
-    return space
-  }
-  return spaces.get(name)!
+  return NmspManager.get(name)
 }
 
 function listen(port: number, callback: (ls: us_listen_socket) => void) {

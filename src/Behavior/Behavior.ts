@@ -6,6 +6,7 @@ import { v4 as uuid, validate as isUUID } from 'uuid'
 import { DataManager } from '../DataManager/DataManager.js'
 import { ServerProxy } from '../ServerProxy/ServerProxy.js'
 import logger from '../Logger/Logger.js'
+import { NmspManager } from '../Namespace/Manager.js'
 
 export class Behavior implements WebSocketBehavior {
   constructor(private _manager: EventManager) {}
@@ -13,6 +14,7 @@ export class Behavior implements WebSocketBehavior {
   public get open() {
     return async function (this: EventManager, socket: WebSocket) {
       if (isNot(socket.id, 'uuid')) socket.id = uuid()
+      NmspManager.get(this.namespace).Sockets.addOne(socket.id)
       ServerProxy.pool.set(socket.id, socket)
       socket.subscribe(`${this.namespace}/broadcast`)
 

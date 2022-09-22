@@ -14,6 +14,8 @@ export declare interface INamespace {
 
   get Aliases(): IAliasPool
   get Sockets(): List<string>
+  get Events(): EventManager
+  get EventsKeys(): Array<string>
 }
 
 export class Namespace implements INamespace {
@@ -56,5 +58,13 @@ export class Namespace implements INamespace {
 
   get Sockets() {
     return this._sockets
+  }
+
+  get EventsKeys() {
+    return this._events.events
+  }
+
+  get Events(): EventManager {
+    return this._events
   }
 }

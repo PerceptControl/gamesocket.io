@@ -33,7 +33,7 @@ export class NmspManager {
     let space: Namespace
     if (name.startsWith('/')) name = name.split('/')[1]
     if (!this.has(name)) {
-      if (logger.flags.debug) logger.debug(`Created namespace "${name}"`)
+      if (logger.flags.debug) logger.debug(`Created namespace: "${name}"`)
       let manager = new EventManager(name)
       space = new Namespace(name, manager)
 
@@ -47,6 +47,10 @@ export class NmspManager {
 
   public static get managers() {
     return this._managers
+  }
+
+  public static get spaces() {
+    return this._spaces.values()
   }
 
   private static has(name: string) {

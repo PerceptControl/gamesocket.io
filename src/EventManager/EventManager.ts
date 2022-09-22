@@ -6,12 +6,14 @@ export declare type EventHandler = Handler<IDataEscort>
 
 export class EventManager implements IManager<EventEscort> {
   private _escorts: Map<eventName, EventEscort> = new Map()
+  private _events: Array<string> = new Array()
   constructor(public namespace: string) {}
   spawn(event: string, callback?: EventHandler): EventEscort {
     if (logger.flags.debug)
       logger.debug(`${this.namespace}(EventManager): spawning handler escort "${event}". \nCallback is ${callback}`)
     let escort = new EventEscort('_', event, callback)
     this._escorts.set(event, escort)
+    this._events.push(event)
 
     return escort
   }
@@ -28,6 +30,10 @@ export class EventManager implements IManager<EventEscort> {
 
   get pool() {
     return this._escorts
+  }
+
+  get events() {
+    return this._events
   }
 }
 

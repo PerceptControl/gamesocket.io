@@ -32,9 +32,6 @@ export declare interface IManager<Escort> {
 }
 
 const sockets: Map<socketID, WebSocket> = new Map()
-const spaces: Map<string, Namespace> = new Map()
-const managers: Map<string, EventManager> = new Map()
-
 ServerProxy.pool = sockets
 
 function of(name: string): Namespace {
@@ -42,9 +39,9 @@ function of(name: string): Namespace {
 }
 
 function listen(port: number, callback: (ls: us_listen_socket) => void) {
-  for (let name of spaces.keys()) {
-    let events = managers.get(name) as EventManager
-    ServerProxy.app.ws(`/${name}`, new Behavior(events))
+  for (let space of NmspManager.spaces) {
+    if (!space) continue
+    ServerProxy.app.ws(`/${space.name}`, new Behavior(space?.Events))
   }
   ServerProxy.app.listen(port, callback)
 }

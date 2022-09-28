@@ -9,16 +9,16 @@ class NamespaceList extends List<Namespace> {
   }
 
   get(nmsp: string) {
-    for (let i = 0; i < super._elements?.length; i++) {
-      if (super._elements[i]?.name == nmsp) return super._elements[i]
+    for (let i = 0; i < this._elements?.length; i++) {
+      if (this._elements[i]?.name == nmsp) return this._elements[i]
     }
 
     return undefined
   }
 
   has(nmsp: string) {
-    for (let i = 0; i < super._elements?.length; i++) {
-      if (super._elements[i]?.name == nmsp) return true
+    for (let i = 0; i < this._elements?.length; i++) {
+      if (this._elements[i]?.name == nmsp) return true
     }
 
     return false

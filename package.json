@@ -1,6 +1,6 @@
 {
   "name": "gamesocket.io",
-  "version": "1.3.20",
+  "version": "1.3.21",
   "description": "Simple event-oriented API for uWebSocket.js",
   "author": "Egor Dorofeichik <sa1rac.work@gmail.com>",
   "license": "MIT",

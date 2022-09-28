@@ -51,7 +51,6 @@ export default function (options?: AppOptions): {
   sockets: Map<string, WebSocket>
   of: typeof of
   listen: typeof listen
-  aliases: AliasPool
   logger: typeof logger
 } {
   if (!options) ServerProxy.app = uWS.App()
@@ -66,7 +65,6 @@ export default function (options?: AppOptions): {
     sockets: sockets,
     of: of,
     listen: listen,
-    aliases: new AliasPool(),
     logger: logger,
   }
 }

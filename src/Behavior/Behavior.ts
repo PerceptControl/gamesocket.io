@@ -39,7 +39,7 @@ export class Behavior implements WebSocketBehavior {
       if (closeHandler) {
         const data = {
           namespace: this.namespace,
-          id: socket.id,
+          socket: socket,
           code: code,
           message: DataManager.decode(message),
         }
@@ -137,5 +137,6 @@ function isNot(entity: unknown, type: string) {
 }
 
 function contains(object: Object, param: string) {
+  if (typeof object != 'object') return false
   return param in object
 }
